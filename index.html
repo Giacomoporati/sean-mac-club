@@ -108,9 +108,9 @@ footer{text-align:center;font-size:12px;color:var(--muted);padding:10px 16px}
 <div class="demo">Demo · made-up swimmers and families · changes save in this browser only</div>
 <div id="root"></div>
 <div id="toast" class="toast" hidden></div>
-<footer>Sean Mac Club · prototype v0.5</footer>
+<footer>Sean Mac Club · prototype v0.7</footer>
 <script>
-const KEY='seanMacClubDemo_v4';
+const KEY='seanMacClubDemo_v5';
 const EVENTS=['50 Free','100 Free','200 Free','50 Back','100 Back','50 Breast','100 Breast','50 Fly','100 Fly','100 IM','200 IM'];
 const MULT={'50 Free':1,'100 Free':2.2,'200 Free':4.75,'50 Back':1.12,'100 Back':2.45,'50 Breast':1.26,'100 Breast':2.75,'50 Fly':1.1,'100 Fly':2.5,'100 IM':2.5,'200 IM':5.3};
 const SQUADS={dol:{name:'Dolphins',ages:'8–10',ses:[[1,'17:00','18:00'],[3,'17:00','18:00']]},
@@ -204,7 +204,7 @@ function seed(){
     {id:'k3',name:'Ann Moran',email:'treasurer@example.com',committee:'General Club – Treasurer',coach:null},
     {id:'k4',name:'Rita Quinn',email:'cwo@example.com',committee:"Club Children's Officer – Lead",coach:null},
     {id:'k5',name:'Paul Gill',email:'complaints@example.com',committee:'General Club – Complaints & Disciplinary Officer',coach:null},
-    {id:'k6',name:'Sinéad Lynch',email:'member@example.com',committee:'Committee member',coach:'Swimming Teacher'},
+    {id:'k6',name:'Sinéad Lynch',email:'member@example.com',committee:'Committee member',coach:null},
     {id:'c1',name:'Dave Ryan',email:'coach1@example.com',committee:null,coach:'Coach'},
     {id:'c2',name:'Laura Shiels',email:'coach2@example.com',committee:null,coach:'Coach'},
     {id:'c3',name:'Kevin Hayes',email:'teacher@example.com',committee:null,coach:'Swimming Teacher'}];
@@ -278,12 +278,13 @@ function vTeam(){
   <div class="stats"><div class="stat ${n<CMIN?'warn':''}"><div class="n">${n}/${CMAX}</div><div class="l">Committee (min ${CMIN})</div></div><div class="stat"><div class="n">${coaches().length}</div><div class="l">Coaching staff</div></div></div>
   <div class="card"><h3>Required roles</h3><ul class="list">${REQUIRED_ROLES.map(r=>{const x=db.staff.find(y=>y.committee===r);return `<li><span>${esc(shortRole(r))}</span>${x?`<b>${esc(x.name)}</b>`:'<span class="tag t-red">Empty</span>'}</li>`}).join('')}</ul></div>
   <div class="card"><h3>Committee</h3><p class="small muted" style="margin:0 0 4px">Sees club admin: members, meets, fees, notices. Each person holds one committee role only, so the 6 required roles need 6 different people.</p><ul class="list">${committee().map(row).join('')}</ul></div>
-  <div class="card"><h3>Coaching staff</h3><p class="small muted" style="margin:0 0 4px">Sees squads, attendance, all Training tools, meet entries and times.</p><ul class="list">${coaches().map(row).join('')}</ul></div>
+  <div class="card"><h3>Coaching staff</h3><p class="small muted" style="margin:0 0 4px">Sees squads, attendance, all Training tools, meet entries and times. Coaches and swimming teachers are not on the committee (except the Head Coach).</p><ul class="list">${coaches().map(row).join('')}</ul></div>
   ${edit?`<div class="card"><h3>➕ Add a person</h3>
     <div class="field"><label for="tName">Name</label><input class="inp" id="tName"></div>
     <div class="field"><label for="tEmail">Email</label><input class="inp" id="tEmail" type="email"></div>
     <div class="grid2f"><div class="field"><label for="tCom">Committee role</label><select class="inp" id="tCom"><option value="">Not on committee</option>${COMMITTEE_ROLES.map(r=>{const taken=REQUIRED_ROLES.includes(r)&&db.staff.some(y=>y.committee===r);return `<option value="${esc(r)}" ${n>=CMAX||taken?'disabled':''}>${esc(shortRole(r))}${taken?' (filled)':''}</option>`}).join('')}</select></div>
     <div class="field"><label for="tCoach">Coaching role</label><select class="inp" id="tCoach"><option value="">None</option>${COACH_ROLES.map(r=>`<option>${r}</option>`).join('')}</select></div></div>
+    <p class="small muted" style="margin:0 0 6px">Choose <b>one</b>: a committee role <i>or</i> a coaching role. Only the Head Coach is on both.</p>
     ${n>=CMAX?'<p class="small" style="color:var(--red);margin:0">Committee is full (12). Remove someone before adding a new committee member.</p>':''}
     <button class="btn btn-main" data-act="addstaff">Add person</button></div>`:'<p class="small muted">Only the Head Coach and the Chairperson can change the committee and staff.</p>'}`;
 }
@@ -372,7 +373,7 @@ const sesM=t=>t.sets.reduce((a,x)=>a+setM(x),0);
 const sesLoad=t=>Math.round(t.sets.reduce((a,x)=>a+setM(x)*ZONES[x.zone].f,0)/100);
 const mondayOf=off=>{const d=today();const dw=(d.getDay()+6)%7;d.setDate(d.getDate()-dw+7*off);return ymd(d)};
 const trList=()=>db.training.filter(t=>ui.trSquad==='all'||t.squad===ui.trSquad);
-const setText=x=>(x.reps>1?x.reps+' × ':'')+x.dist+' '+x.stroke+(x.kind!=='Swim'?' '+x.kind.toLowerCase():'');
+const setText=x=>x.text?x.text:(x.reps>1?x.reps+' × ':'')+x.dist+' '+x.stroke+(x.kind!=='Swim'?' '+x.kind.toLowerCase():'');
 function vTraining(){
   if(ui.edit) return vEditor();
   let h=`<h2>Training <span class="coachonly">Coach only</span></h2>
@@ -422,25 +423,30 @@ function vCal(){
 function vLib(){
   return `<div class="card"><h3>Saved sets</h3><ul class="list">${db.library.map(l=>`<li><span><b>${esc(l.name)}</b> <span class="zone" style="background:${ZONES[l.zone].c}">${l.zone}</span><br><span class="small muted">${esc(setText(l))}${l.equip.length?' · '+l.equip.join(', '):''}${l.note?' · '+esc(l.note):''}</span></span><span style="text-align:right"><b>${setM(l)}m</b><br><button class="x" data-act="dellib" data-id="${l.id}" aria-label="Delete">×</button></span></li>`).join('')||'<li class="muted">No saved sets yet. Save one from the session builder.</li>'}</ul></div>`;
 }
+function parseLine(line){
+  const L=line.trim(), lo=L.toLowerCase();
+  let reps=1, dist=0, m=lo.match(/(\d+)\s*[x×*]\s*(\d+)/);
+  if(m){reps=+m[1];dist=+m[2]}else{m=lo.match(/(?:^|\s)(\d{2,4})\s*m?(?=\s|$|[a-z])/);if(m&&+m[1]>=25)dist=+m[1]}
+  const has=re=>re.test(lo);
+  const stroke=has(/\b(im|medley)\b/)?'IM':has(/\b(fly|butterfly)\b/)?'Fly':has(/\b(breast|br|brs)\b/)?'Breast':has(/\b(back|bk|bc)\b/)?'Back':has(/\b(choice|ch|mix)\b/)?'Choice':has(/\b(free|fs|fr|freestyle)\b/)?'Free':'Choice';
+  const zone=has(/\b(max|race|sprint|all out)\b/)?'MAX':has(/\b(fast|threshold|thr|hard)\b/)?'FAST':has(/\ba2\b/)?'A2':has(/\ba1\b|\beasy\b|\bwarm|\bswim.?down|\bcool/)?'A1':has(/\bmax\b/)?'MAX':has(/\ba3\b/)?'FAST':'A1';
+  const kind=has(/\bpull\b/)?'Pull':has(/\bkick\b/)?'Kick':has(/\bdrill/)?'Drill':'Swim';
+  const equip=[['Buoy',/\bbuoy\b/],['Paddles',/\bpaddles?\b/],['Fins',/\bfins?\b/],['Snorkel',/\bsnorkel\b/],['Kickboard',/\b(kick)?board\b/]].filter(([,r])=>r.test(lo)).map(([n])=>n);
+  return {text:L,reps,dist,stroke,zone,kind,equip,note:''};
+}
+const lineOf=x=>x.text||((x.reps>1?x.reps+'x':'')+x.dist+' '+x.stroke+(x.kind!=='Swim'?' '+x.kind.toLowerCase():'')+' '+x.zone+(x.equip.length?' '+x.equip.join(' ').toLowerCase():'')+(x.note?' '+x.note:''));
 function vEditor(){
   const t=ui.draft, tot=sesM(t), load=sesLoad(t);
-  const sel=(id,opts,v)=>`<select class="inp" id="${id}">${opts.map(o=>`<option ${o===v?'selected':''}>${o}</option>`).join('')}</select>`;
   return `<button class="link" data-act="closetr">← Back to training</button><h2>${t.id?'Edit session':'Plan a session'} <span class="coachonly">Coach only</span></h2>
   <div class="card"><div class="grid3f ed"><div class="field"><label for="eDate">Date</label><input class="inp" id="eDate" type="date" value="${t.date}" data-change="draft"></div>
   <div class="field"><label for="eSquad">Squad</label><select class="inp" id="eSquad" data-change="draft">${Object.entries(SQUADS).map(([k,s])=>`<option value="${k}" ${k===t.squad?'selected':''}>${s.name}</option>`).join('')}</select></div>
   <div class="field"><label for="eAm">Time</label><select class="inp" id="eAm" data-change="draft"><option ${t.ampm==='AM'?'selected':''}>AM</option><option ${t.ampm==='PM'?'selected':''}>PM</option></select></div></div></div>
+  <div class="card"><h3>✍️ Write your session</h3>
+    <textarea class="inp" id="sText" rows="12" style="font-family:ui-monospace,Menlo,monospace;font-size:15px;line-height:1.6" placeholder="400 choice easy warm up&#10;8x100 free pull buoy paddles A2 @1:40&#10;6x50 fly kick fins fast&#10;8x25 free max dive&#10;200 choice swim down">${esc(t.sets.map(lineOf).join('\n'))}</textarea>
+    <p class="small muted" style="margin:6px 0 0">One set per line, written your way. The app reads the numbers (8x100, 400…), strokes (free, back, breast, fly, IM, choice), type (pull, kick, drill), zone (A1, A2, fast, max, easy) and kit (buoy, paddles, fins, snorkel, board).</p>
+    <button class="btn btn-ghost" data-act="parse">Calculate metres</button></div>
   <div class="stats"><div class="stat"><div class="n">${tot.toLocaleString('en-IE')}m</div><div class="l">Total</div></div><div class="stat"><div class="n">${load}</div><div class="l">Load</div></div></div>
-  <div class="card"><h3>Sets</h3>${t.sets.map((x,i)=>`<div class="setrow"><div class="what"><b>${esc(setText(x))}</b> <span class="zone" style="background:${ZONES[x.zone].c}">${x.zone}</span><br><span class="small muted">${x.equip.length?x.equip.join(', '):'No equipment'}${x.note?' · '+esc(x.note):''}</span></div>
-    <div style="text-align:right"><b>${setM(x)}m</b><br><button class="x" data-act="setup" data-i="${i}" ${i?'':'disabled'} aria-label="Move up">↑</button><button class="x" data-act="savelib" data-i="${i}" aria-label="Save to library" title="Save to library">☆</button><button class="x" data-act="delset" data-i="${i}" aria-label="Delete set">×</button></div></div>`).join('')||'<p class="muted" style="margin:0">No sets yet. Add one below.</p>'}</div>
-  <div class="card"><h3>➕ Add a set</h3>
-    <div class="field"><label for="libPick">From library</label><select class="inp" id="libPick"><option value="">— choose a saved set —</option>${db.library.map(l=>`<option value="${l.id}">${esc(l.name)} · ${esc(setText(l))}</option>`).join('')}</select></div>
-    <button class="btn btn-ghost" data-act="addlib">Add saved set</button>
-    <p class="small muted" style="text-align:center;margin:12px 0 8px">or build a new one</p>
-    <div class="grid3f"><div class="field"><label for="sReps">Reps</label><input class="inp" id="sReps" type="number" min="1" value="4"></div><div class="field"><label for="sDist">Distance (m)</label><input class="inp" id="sDist" type="number" min="25" step="25" value="100"></div><div class="field"><label for="sStroke">Stroke</label>${sel('sStroke',STROKES,'Free')}</div></div>
-    <div class="grid2f"><div class="field"><label for="sZone">Energy zone</label>${sel('sZone',Object.keys(ZONES),'A1')}</div><div class="field"><label for="sKind">Type</label>${sel('sKind',KINDS,'Swim')}</div></div>
-    <div class="eq">${EQUIP.map(e=>`<label><input type="checkbox" name="sEq" value="${e}"> ${e}</label>`).join('')}</div>
-    <div class="field"><label for="sNote">Note (optional)</label><input class="inp" id="sNote" placeholder="e.g. on 1:40, descend 1–4"></div>
-    <button class="btn btn-ghost" data-act="addset">Add set</button></div>
+  ${t.sets.length?`<div class="card"><h3>What the app read</h3>${t.sets.map(x=>`<div class="setrow"><div class="what"><b>${esc(x.text||lineOf(x))}</b><br><span class="small muted">${setM(x)?`<span class="zone" style="background:${ZONES[x.zone].c}">${x.zone}</span> ${x.stroke} · ${x.kind}${x.equip.length?' · '+x.equip.join(', '):''}`:'Note (no metres)'}</span></div><b>${setM(x)?setM(x)+'m':'—'}</b></div>`).join('')}</div>`:''}
   <button class="btn btn-main" data-act="savetr">Save session</button>
   ${t.id?'<button class="btn btn-ghost" data-act="deltr" style="color:var(--red);border-color:var(--red)">Delete session</button>':''}`;
 }
@@ -539,13 +545,15 @@ document.addEventListener('click',e=>{
   else if(a==='setup'){const i=Number(d.i),S_=ui.draft.sets;[S_[i-1],S_[i]]=[S_[i],S_[i-1]]}
   else if(a==='savelib'){const x=ui.draft.sets[Number(d.i)],n=prompt('Name for this set:',setText(x));if(!n)return;db.library.push({id:'L'+Date.now(),name:n,...JSON.parse(JSON.stringify(x))});save();toast('Saved to set library')}
   else if(a==='dellib'){if(!confirm('Delete this saved set?'))return;db.library=db.library.filter(l=>l.id!==d.id);save()}
-  else if(a==='savetr'){const t=ui.draft;if(!t.sets.length){toast('Add at least one set');return}
+  else if(a==='parse'){ui.draft.sets=val('sText').split('\n').filter(l=>l.trim()).map(parseLine);toast('Metres calculated')}
+  else if(a==='savetr'){const t=ui.draft;if(document.getElementById('sText'))t.sets=val('sText').split('\n').filter(l=>l.trim()).map(parseLine);if(!t.sets.length){toast('Write at least one set');return}
     t.title=SQUADS[t.squad].name+' – '+fd(t.date);
     if(t.id){const i=db.training.findIndex(x=>x.id===t.id);db.training[i]=t}else{t.id='t'+Date.now();db.training.push(t)}
     save();ui.edit=null;ui.draft=null;toast('Session saved · '+sesM(t).toLocaleString('en-IE')+'m')}
   else if(a==='deltr'){if(!confirm('Delete this session?'))return;db.training=db.training.filter(x=>x.id!==ui.draft.id);save();ui.edit=null;ui.draft=null;toast('Session deleted')}
   else if(a==='addstaff'){if(!canManageTeam())return;const nmv=val('tName'),em=val('tEmail'),cr=val('tCom')||null,kr=val('tCoach')||null;
-    if(!nmv){toast('Add a name');return} if(!cr&&!kr){toast('Choose a committee role, a coaching role, or both');return}
+    if(!nmv){toast('Add a name');return} if(!cr&&!kr){toast('Choose a committee role or a coaching role');return}
+    if(cr&&kr){toast('Only the Head Coach can be on the committee and the coaching staff. Choose one.');return}
     if(cr&&committee().length>=CMAX){toast('Committee is full (max '+CMAX+')');return}
     if(cr&&REQUIRED_ROLES.includes(cr)&&db.staff.some(y=>y.committee===cr)){toast(shortRole(cr)+' is already filled');return}
     if(!em){toast('Add an email: each person needs their own login');return}
