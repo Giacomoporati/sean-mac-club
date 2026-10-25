@@ -77,6 +77,29 @@ h3{font-family:"Barlow Condensed",sans-serif;font-size:21px;font-weight:700;marg
 .toast{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto;background:var(--deep);color:#fff;border-radius:12px;padding:13px 16px;z-index:20;font-size:15px;font-weight:600}
 .toast[hidden]{display:none}
 .link{background:none;border:none;color:var(--pool);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer;padding:6px 0}
+.sub{display:flex;background:#DDE8EE;border-radius:12px;padding:4px;gap:4px;margin-bottom:14px}
+.sub button{flex:1;border:none;background:transparent;border-radius:9px;padding:9px;font:inherit;font-weight:700;font-size:15px;color:var(--muted);cursor:pointer}
+.sub button.on{background:#fff;color:var(--deep)}
+.chart{width:100%;height:auto;display:block}
+.bd h4{margin:14px 0 6px;font-size:15px}
+.stack{display:flex;height:10px;border-radius:5px;overflow:hidden;margin-bottom:6px;background:#EDF1F4}
+.bdrow{display:flex;align-items:center;gap:8px;font-size:15px;padding:3px 0}
+.bdrow .sw{width:10px;height:10px;border-radius:50%;flex:none}
+.bdrow .nm{flex:1}.bdrow .pc{color:var(--muted);width:44px;text-align:right}.bdrow .m{width:70px;text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
+.cal .hd{font-size:12px;font-weight:700;color:var(--muted);text-align:center;padding:4px 0}
+.cal .dy{min-width:0;min-height:60px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:4px;font:inherit;font-size:12px;text-align:left;cursor:pointer;color:var(--ink);display:flex;flex-direction:column;gap:2px}
+.cal .dy.out{opacity:.4}.cal .dy.today{border:2px solid var(--pool)}
+.cal .pill{display:block;border-radius:4px;padding:1px 3px;font-size:10px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.setrow{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.setrow .what{flex:1}.setrow .what b{font-size:17px}
+.zone{display:inline-block;font-size:12px;font-weight:800;padding:1px 7px;border-radius:5px;color:#fff}
+.grid3f{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.grid3f.ed{grid-template-columns:1.6fr 1.4fr 1fr}
+.eq{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.eq label{display:flex;align-items:center;gap:5px;font-size:14px;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:4px 10px;cursor:pointer}
+.x{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:0 6px}
+.coachonly{display:inline-block;font-size:12px;font-weight:700;background:var(--deep);color:#fff;border-radius:6px;padding:2px 8px;margin-left:6px;vertical-align:middle}
 footer{text-align:center;font-size:12px;color:var(--muted);padding:10px 16px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -85,14 +108,28 @@ footer{text-align:center;font-size:12px;color:var(--muted);padding:10px 16px}
 <div class="demo">Demo · made-up swimmers and families · changes save in this browser only</div>
 <div id="root"></div>
 <div id="toast" class="toast" hidden></div>
-<footer>Sean Mac Club · prototype v0.1</footer>
+<footer>Sean Mac Club · prototype v0.5</footer>
 <script>
-const KEY='seanMacClubDemo_v1';
+const KEY='seanMacClubDemo_v4';
 const EVENTS=['50 Free','100 Free','200 Free','50 Back','100 Back','50 Breast','100 Breast','50 Fly','100 Fly','100 IM','200 IM'];
 const MULT={'50 Free':1,'100 Free':2.2,'200 Free':4.75,'50 Back':1.12,'100 Back':2.45,'50 Breast':1.26,'100 Breast':2.75,'50 Fly':1.1,'100 Fly':2.5,'100 IM':2.5,'200 IM':5.3};
 const SQUADS={dol:{name:'Dolphins',ages:'8–10',ses:[[1,'17:00','18:00'],[3,'17:00','18:00']]},
   sha:{name:'Sharks',ages:'11–13',ses:[[1,'18:00','19:00'],[3,'18:00','19:00'],[5,'18:00','19:00']]},
   per:{name:'Performance',ages:'14+',ses:[[2,'19:00','20:30'],[4,'19:00','20:30'],[6,'08:00','10:00']]}};
+const STROKES=['Free','Back','Breast','Fly','IM','Choice'];
+const ZONES={A1:{c:'#3B82C4',f:1,d:'Aerobic easy'},A2:{c:'#11865A',f:2,d:'Aerobic hard'},FAST:{c:'#E07A1F',f:3,d:'Threshold / fast'},MAX:{c:'#D7263D',f:4,d:'Race pace / max'}};
+const KINDS=['Swim','Pull','Kick','Drill'];
+const EQUIP=['Buoy','Paddles','Fins','Snorkel','Kickboard'];
+const SCOL={Free:'#3B82C4',Back:'#11865A',Breast:'#E0A21F',Fly:'#D7263D',IM:'#7C5CD6',Choice:'#8A9BA6'};
+const KCOL={Swim:'#3B82C4',Pull:'#E0A21F',Kick:'#11865A',Drill:'#7C5CD6'};
+const ECOL={Buoy:'#8BC34A',Paddles:'#E07A1F',Fins:'#1FB5C9',Snorkel:'#3B82C4',Kickboard:'#7C5CD6'};
+const REQUIRED_ROLES=['General Club – Chairperson','General Club – Secretary','General Club – Treasurer',"Club Children's Officer – Lead",'Head Coach','General Club – Complaints & Disciplinary Officer'];
+const OPTIONAL_ROLES=['Committee member','Registrar','PRO'];
+const COMMITTEE_ROLES=REQUIRED_ROLES.filter(r=>r!=='Head Coach').concat(OPTIONAL_ROLES);
+const shortRole=r=>(r||'').replace('General Club – ','').replace("Club Children's Officer – Lead","Children's Officer (Lead)");
+const missingRoles=()=>REQUIRED_ROLES.filter(r=>!db.staff.some(x=>x.committee===r));
+const COACH_ROLES=['Coach','Swimming Teacher'];
+const CMIN=6,CMAX=12;
 const FEE=35, DAY=864e5, DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const BANK={name:'Sean Mac Club (sample)',iban:'IE00 SAMP 0000 0000 0000 00',bic:'SAMPIE00'};
 
@@ -145,12 +182,38 @@ function seed(){
   });
   const notices=[{id:'n1',date:addD(T,-2),text:'Pool closed this Saturday for maintenance. Performance squad: dryland session in the hall at 09:00 instead.'},
     {id:'n2',date:addD(T,-6),text:'Dublin Development Meet: please declare by '+fd(addD(T,8))+' in the Meets tab.'}];
-  return {families,swimmers,results,attendance,meets,charges,notices};
+  const library=[
+    {id:'L1',name:'Warm-up 400',reps:1,dist:400,stroke:'Choice',zone:'A1',kind:'Swim',equip:[],note:'Easy, mix strokes'},
+    {id:'L2',name:'Aerobic pull',reps:8,dist:100,stroke:'Free',zone:'A2',kind:'Pull',equip:['Buoy','Paddles'],note:'On 1:40'},
+    {id:'L3',name:'Kick with fins',reps:6,dist:50,stroke:'Fly',zone:'A2',kind:'Kick',equip:['Fins'],note:'Underwater dolphin to 10m'},
+    {id:'L4',name:'Race-pace 25s',reps:8,dist:25,stroke:'Free',zone:'MAX',kind:'Swim',equip:[],note:'Dive start, 1:00 rest'},
+    {id:'L5',name:'IM drill',reps:4,dist:100,stroke:'IM',zone:'A1',kind:'Drill',equip:['Snorkel'],note:'25 drill / 25 swim'},
+    {id:'L6',name:'Threshold 200s',reps:3,dist:200,stroke:'Free',zone:'FAST',kind:'Swim',equip:[],note:'Hold best average'},
+    {id:'L7',name:'Swim-down',reps:1,dist:200,stroke:'Choice',zone:'A1',kind:'Swim',equip:[],note:''}];
+  const pick=k=>{const l=library.find(x=>x.id===k);return {reps:l.reps,dist:l.dist,stroke:l.stroke,zone:l.zone,kind:l.kind,equip:l.equip.slice(),note:l.note}};
+  const plans={dol:[['L1','L5','L3','L7'],['L1','L3','L4','L7']],sha:[['L1','L2','L3','L6','L7'],['L1','L5','L4','L7'],['L1','L2','L6','L7']],per:[['L1','L2','L6','L3','L4','L7'],['L1','L5','L2','L6','L7'],['L1','L2','L3','L6','L4','L7']]};
+  const training=[]; let ti=0;
+  for(let d=-35;d<=3;d++){const ds=addD(T,d),dw=pd(ds).getDay();
+    Object.entries(SQUADS).forEach(([k,sq])=>{const si=sq.ses.findIndex(x=>x[0]===dw);if(si<0)return;
+      const pl=plans[k][si%plans[k].length];
+      training.push({id:'t'+(ti++),date:ds,squad:k,ampm:+sq.ses[si][1].slice(0,2)<12?'AM':'PM',title:sq.name+' – '+fd(ds),sets:pl.map(pick).map(x=>(R()<0.3?{...x,reps:x.reps+1}:x))});});}
+  const staff=[
+    {id:'hc',name:'Head Coach',email:'headcoach@example.com',committee:'Head Coach',coach:'Head Coach'},
+    {id:'k1',name:'Mary Fitzgerald',email:'chair@example.com',committee:'General Club – Chairperson',coach:null},
+    {id:'k2',name:'John Keane',email:'secretary@example.com',committee:'General Club – Secretary',coach:null},
+    {id:'k3',name:'Ann Moran',email:'treasurer@example.com',committee:'General Club – Treasurer',coach:null},
+    {id:'k4',name:'Rita Quinn',email:'cwo@example.com',committee:"Club Children's Officer – Lead",coach:null},
+    {id:'k5',name:'Paul Gill',email:'complaints@example.com',committee:'General Club – Complaints & Disciplinary Officer',coach:null},
+    {id:'k6',name:'Sinéad Lynch',email:'member@example.com',committee:'Committee member',coach:'Swimming Teacher'},
+    {id:'c1',name:'Dave Ryan',email:'coach1@example.com',committee:null,coach:'Coach'},
+    {id:'c2',name:'Laura Shiels',email:'coach2@example.com',committee:null,coach:'Coach'},
+    {id:'c3',name:'Kevin Hayes',email:'teacher@example.com',committee:null,coach:'Swimming Teacher'}];
+  return {families,swimmers,results,attendance,meets,charges,notices,training,library,staff};
 }
 function load(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}}
-let db=load(); if(!db||!db.swimmers){db=seed();save()}
-let ui={who:null,tab:null,squad:'sha',ses:null,meet:null,sw:null,famOpen:null};
+let db=load(); if(!db||!db.swimmers||!db.training||!db.staff){db=seed();save()}
+let ui={who:null,tab:null,squad:'sha',ses:null,meet:null,sw:null,famOpen:null,trView:'week',trSquad:'all',trWeek:0,trMonth:0,edit:null,draft:null};
 let toastT;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2600)}
 
 const sw=id=>db.swimmers.find(s=>s.id===id);
@@ -169,15 +232,23 @@ const STD={silver:3800,gold:3300};
 function stdTag(ev,t){if(t<=Math.round(STD.gold*MULT[ev]))return '<span class="tag t-gold">Gold</span>';if(t<=Math.round(STD.silver*MULT[ev]))return '<span class="tag t-silver">Silver</span>';return ''}
 const upMeets=()=>db.meets.filter(m=>pd(m.date)>=today()).sort((a,b)=>a.date.localeCompare(b.date));
 const pastMeets=()=>db.meets.filter(m=>pd(m.date)<today()).sort((a,b)=>b.date.localeCompare(a.date));
-const role=()=>ui.who==='coach'?'coach':ui.who==='treas'?'treas':'parent';
+const me=()=>db.staff.find(x=>x.id===ui.who)||null;
+const role=()=>me()?'staff':'parent';
+const isCom=()=>!!(me()&&me().committee);
+const isCoach=()=>!!(me()&&me().coach);
+const canManageTeam=()=>!!(me()&&(me().committee==='Head Coach'||me().committee==='General Club – Chairperson'));
+const committee=()=>db.staff.filter(x=>x.committee);
+const coaches=()=>db.staff.filter(x=>x.coach);
 
 /* ---------- LOGIN */
 function vLogin(){
   return `<header><button class="badge-club" data-act="home" aria-label="Home">SM</button><div class="t"><h1>Sean Mac Club</h1><p>Sean McDermott Street pool, Dublin 1</p></div></header><div class="rope"></div>
   <main><h2>Who's using the app?</h2><p class="small muted" style="margin-top:-6px">Demo only: in the real app everyone logs in with email and password.</p>
-  <button class="who staff" data-act="login" data-who="coach"><span class="av">HC</span><span><b>Head Coach</b><br><span class="small muted">Squads, attendance, meets, times, fees</span></span></button>
-  <button class="who staff" data-act="login" data-who="treas"><span class="av">€</span><span><b>Treasurer</b><br><span class="small muted">Fees and family accounts</span></span></button>
-  <p class="small muted" style="margin:16px 0 8px">Or view as a parent:</p>
+  <h3 style="margin-top:14px">Committee (${committee().length})</h3>
+  ${committee().map(x=>`<button class="who staff" data-act="login" data-who="${x.id}"><span class="av">${esc(x.name[0])}</span><span><b>${esc(x.name)}</b><br><span class="small muted">${esc(shortRole(x.committee))}${x.coach&&x.committee!=='Head Coach'?' · '+esc(x.coach):''}</span></span></button>`).join('')}
+  <h3 style="margin-top:14px">Coaching staff</h3>
+  ${coaches().filter(x=>!x.committee).map(x=>`<button class="who staff" data-act="login" data-who="${x.id}"><span class="av">${esc(x.name[0])}</span><span><b>${esc(x.name)}</b><br><span class="small muted">${esc(x.coach)}</span></span></button>`).join('')}
+  <h3 style="margin-top:14px">Parents</h3>
   ${db.families.map(f=>`<button class="who" data-act="login" data-who="${f.id}"><span class="av">${esc(f.name[0])}</span><span><b>${esc(f.name)}</b><br><span class="small muted">Parent of ${kidsOf(f.id).map(s=>esc(s.first)).join(' & ')}</span></span></button>`).join('')}
   <button class="btn btn-ghost" data-act="reset">Reset demo data</button></main>`;
 }
@@ -194,9 +265,27 @@ function vHomeStaff(){
     <div class="stat"><div class="n">${nm_?Object.values(nm_.decl).filter(v=>v==='yes').length:0}</div><div class="l">Declared for next meet</div></div></div>`;
   h+=`<div class="card"><h3>Next sessions</h3><ul class="list">${Object.entries(SQUADS).map(([k,s])=>{const n=nextSession(k);return `<li><span><b>${s.name}</b> <span class="small muted">${s.ages}</span></span><span class="small">${n?fd(n.date)+' · '+n.start:'—'}</span></li>`}).join('')}</ul></div>`;
   if(nm_) h+=`<div class="card"><div class="row"><h3>${esc(nm_.name)}</h3><span class="tag t-blue">${fd(nm_.date)}</span></div><p class="small muted" style="margin:0">Declarations close ${fd(nm_.deadline)}</p><button class="btn btn-ghost" data-act="openmeet" data-id="${nm_.id}">Manage entries</button></div>`;
-  if(role()==='coach') h+=`<div class="card"><h3>📌 Post a notice</h3><textarea class="inp" id="noticeTxt" rows="3" placeholder="e.g. Training cancelled on Friday"></textarea><button class="btn btn-main" data-act="addnotice">Post to all parents</button></div>`;
-  h+=vNotices(role()==='coach');
+  if(isCom()) h+=`<div class="card"><h3>📌 Post a notice</h3><textarea class="inp" id="noticeTxt" rows="3" placeholder="e.g. Training cancelled on Friday"></textarea><button class="btn btn-main" data-act="addnotice">Post to all parents</button></div>`;
+  h+=vNotices(isCom());
+  if(isCom()){const n=committee().length;h+=`<div class="card"><div class="row"><h3>👥 Committee</h3><span class="tag ${n<CMIN?'t-red':'t-green'}">${n} of ${CMAX} max</span></div>
+    <p class="small muted" style="margin:0">${n<CMIN?'⚠️ Below the minimum of '+CMIN+' members. ':'Minimum '+CMIN+', maximum '+CMAX+' members. '}${missingRoles().length?'<b style="color:var(--red)">Missing: '+missingRoles().map(r=>esc(shortRole(r))).join(', ')+'</b>':'✅ All 6 required roles filled.'}</p><button class="btn btn-ghost" data-act="tab" data-tab="team">${canManageTeam()?'Manage committee & staff':'See committee & staff'}</button></div>`}
   return h;
+}
+function vTeam(){
+  const n=committee().length, edit=canManageTeam();
+  const row=x=>`<li><span><b>${esc(x.name)}</b><br><span class="small muted">${[shortRole(x.committee),x.coach&&x.coach!==x.committee?x.coach:null].filter(Boolean).map(esc).join(' · ')} · ${esc(x.email)}</span>${REQUIRED_ROLES.includes(x.committee)?' <span class="tag t-blue">Required role</span>':''}</span>${edit&&x.id!=='hc'?`<button class="x" data-act="delstaff" data-id="${x.id}" aria-label="Remove">×</button>`:''}</li>`;
+  return `<h2>Committee & staff</h2>
+  <div class="stats"><div class="stat ${n<CMIN?'warn':''}"><div class="n">${n}/${CMAX}</div><div class="l">Committee (min ${CMIN})</div></div><div class="stat"><div class="n">${coaches().length}</div><div class="l">Coaching staff</div></div></div>
+  <div class="card"><h3>Required roles</h3><ul class="list">${REQUIRED_ROLES.map(r=>{const x=db.staff.find(y=>y.committee===r);return `<li><span>${esc(shortRole(r))}</span>${x?`<b>${esc(x.name)}</b>`:'<span class="tag t-red">Empty</span>'}</li>`}).join('')}</ul></div>
+  <div class="card"><h3>Committee</h3><p class="small muted" style="margin:0 0 4px">Sees club admin: members, meets, fees, notices. Each person holds one committee role only, so the 6 required roles need 6 different people.</p><ul class="list">${committee().map(row).join('')}</ul></div>
+  <div class="card"><h3>Coaching staff</h3><p class="small muted" style="margin:0 0 4px">Sees squads, attendance, all Training tools, meet entries and times.</p><ul class="list">${coaches().map(row).join('')}</ul></div>
+  ${edit?`<div class="card"><h3>➕ Add a person</h3>
+    <div class="field"><label for="tName">Name</label><input class="inp" id="tName"></div>
+    <div class="field"><label for="tEmail">Email</label><input class="inp" id="tEmail" type="email"></div>
+    <div class="grid2f"><div class="field"><label for="tCom">Committee role</label><select class="inp" id="tCom"><option value="">Not on committee</option>${COMMITTEE_ROLES.map(r=>{const taken=REQUIRED_ROLES.includes(r)&&db.staff.some(y=>y.committee===r);return `<option value="${esc(r)}" ${n>=CMAX||taken?'disabled':''}>${esc(shortRole(r))}${taken?' (filled)':''}</option>`}).join('')}</select></div>
+    <div class="field"><label for="tCoach">Coaching role</label><select class="inp" id="tCoach"><option value="">None</option>${COACH_ROLES.map(r=>`<option>${r}</option>`).join('')}</select></div></div>
+    ${n>=CMAX?'<p class="small" style="color:var(--red);margin:0">Committee is full (12). Remove someone before adding a new committee member.</p>':''}
+    <button class="btn btn-main" data-act="addstaff">Add person</button></div>`:'<p class="small muted">Only the Head Coach and the Chairperson can change the committee and staff.</p>'}`;
 }
 function vNotices(canDel){return `<div class="card"><h3>Noticeboard</h3>${db.notices.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(n=>`<div class="notice"><div class="d">${fd(n.date)}${canDel?` · <button class="link" data-act="delnotice" data-id="${n.id}" style="padding:0">Delete</button>`:''}</div>${esc(n.text)}</div>`).join('')||'<p class="muted" style="margin:0">No notices.</p>'}</div>`}
 
@@ -206,17 +295,17 @@ function vSquads(){
   const d=dates[i], key=k+'_'+d.date, at=db.attendance[key]||{}, here=list.filter(s=>at[s.id]).length;
   let h=`<h2>Squads</h2><div class="chips">${Object.entries(SQUADS).map(([kk,s])=>`<button class="chip ${kk===k?'on':''}" data-act="squad" data-k="${kk}">${s.name} (${db.swimmers.filter(x=>x.squad===kk).length})</button>`).join('')}</div>
   <div class="weeknav"><button data-act="ses" data-d="-1" ${i<=0?'disabled':''} aria-label="Previous session">◀</button><div class="mid"><strong>${fd(d.date)}</strong><span class="small muted">${sq.name} · ${d.start}–${d.end}</span></div><button data-act="ses" data-d="1" ${i>=dates.length-1?'disabled':''} aria-label="Next session">▶</button></div>
-  <div class="card"><div class="row"><h3>Attendance</h3><b>${here}/${list.length}</b></div>
-  ${list.map(s=>`<button class="att ${at[s.id]?'on':''}" data-act="att" data-id="${s.id}" data-key="${key}"><span class="box">${at[s.id]?'✓':''}</span><span style="flex:1">${esc(nm(s))}</span>${famOwes(s.familyId)&&db.charges.some(c=>c.familyId===s.familyId&&isLate(c))?'<span class="tag t-red">€ overdue</span>':''}</button>`).join('')}</div>
+  ${isCoach()?`<div class="card"><div class="row"><h3>Attendance</h3><b>${here}/${list.length}</b></div>
+  ${list.map(s=>`<button class="att ${at[s.id]?'on':''}" data-act="att" data-id="${s.id}" data-key="${key}"><span class="box">${at[s.id]?'✓':''}</span><span style="flex:1">${esc(nm(s))}</span>${famOwes(s.familyId)&&db.charges.some(c=>c.familyId===s.familyId&&isLate(c))?'<span class="tag t-red">€ overdue</span>':''}</button>`).join('')}</div>`:''}
   <div class="card"><h3>Swimmers in ${sq.name}</h3><ul class="list">${list.map(s=>{const p=attPct(s);return `<li><span><b>${esc(nm(s))}</b><br><span class="small muted">Age ${ageOf(s)} · ${s.gender==='F'?'Female':'Male'} · ${esc(fam(s.familyId).name)} ${s.consent?'· 📸':''}</span></span><span class="tag ${p>=80?'t-green':p>=60?'t-yellow':'t-red'}">${p==null?'—':p+'%'}</span></li>`}).join('')}</ul></div>
-  <div class="card"><h3>➕ Add a swimmer</h3>
+  ${isCom()?`<div class="card"><h3>➕ Add a swimmer</h3>
     <div class="grid2f"><div class="field"><label for="nFirst">First name</label><input class="inp" id="nFirst"></div><div class="field"><label for="nLast">Last name</label><input class="inp" id="nLast"></div></div>
     <div class="grid2f"><div class="field"><label for="nBorn">Year of birth</label><input class="inp" id="nBorn" type="number" min="1990" max="2025" placeholder="2014"></div>
     <div class="field"><label for="nGender">Gender</label><select class="inp" id="nGender"><option value="F">Female</option><option value="M">Male</option></select></div></div>
     <div class="field"><label for="nSquad">Squad</label><select class="inp" id="nSquad">${Object.entries(SQUADS).map(([kk,s])=>`<option value="${kk}" ${kk===k?'selected':''}>${s.name}</option>`).join('')}</select></div>
     <div class="field"><label for="nFam">Family</label><select class="inp" id="nFam"><option value="">New family…</option>${db.families.map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join('')}</select></div>
     <div class="field"><label for="nParent">New parent's name (if new family)</label><input class="inp" id="nParent" placeholder="Parent / guardian"></div>
-    <button class="btn btn-main" data-act="addswimmer">Add swimmer</button></div>`;
+    <button class="btn btn-main" data-act="addswimmer">Add swimmer</button></div>`:''}`;
   return h;
 }
 
@@ -277,6 +366,85 @@ function vFeesStaff(){
   <p class="small muted">Tip: match the family reference (e.g. SM-1004) on the bank statement, then tap "Mark paid".</p>`;
 }
 
+/* ---------- TRAINING (coach only) */
+const setM=x=>x.reps*x.dist;
+const sesM=t=>t.sets.reduce((a,x)=>a+setM(x),0);
+const sesLoad=t=>Math.round(t.sets.reduce((a,x)=>a+setM(x)*ZONES[x.zone].f,0)/100);
+const mondayOf=off=>{const d=today();const dw=(d.getDay()+6)%7;d.setDate(d.getDate()-dw+7*off);return ymd(d)};
+const trList=()=>db.training.filter(t=>ui.trSquad==='all'||t.squad===ui.trSquad);
+const setText=x=>(x.reps>1?x.reps+' × ':'')+x.dist+' '+x.stroke+(x.kind!=='Swim'?' '+x.kind.toLowerCase():'');
+function vTraining(){
+  if(ui.edit) return vEditor();
+  let h=`<h2>Training <span class="coachonly">Coach only</span></h2>
+  <div class="chips"><button class="chip ${ui.trSquad==='all'?'on':''}" data-act="trsq" data-k="all">All squads</button>${Object.entries(SQUADS).map(([k,s])=>`<button class="chip ${ui.trSquad===k?'on':''}" data-act="trsq" data-k="${k}">${s.name}</button>`).join('')}</div>
+  <div class="sub">${[['week','Week'],['cal','Calendar'],['lib','Set library']].map(([k,l])=>`<button class="${ui.trView===k?'on':''}" data-act="trview" data-v="${k}">${l}</button>`).join('')}</div>`;
+  if(ui.trView==='week') h+=vWeek(); else if(ui.trView==='cal') h+=vCal(); else h+=vLib();
+  return h;
+}
+function vWeek(){
+  const mon=mondayOf(ui.trWeek), days=[...Array(7)].map((_,i)=>addD(mon,i));
+  const prevDays=days.map(d=>addD(d,-7));
+  const L=trList(), wk=L.filter(t=>days.includes(t.date));
+  const vol=wk.reduce((a,t)=>a+sesM(t),0), load=wk.reduce((a,t)=>a+sesLoad(t),0);
+  const dv=days.map(d=>L.filter(t=>t.date===d).reduce((a,t)=>a+sesM(t),0)), pv=prevDays.map(d=>L.filter(t=>t.date===d).reduce((a,t)=>a+sesM(t),0));
+  const dl=days.map(d=>L.filter(t=>t.date===d).reduce((a,t)=>a+sesLoad(t),0));
+  const maxV=Math.max(1000,...dv,...pv), maxL=Math.max(10,...dl);
+  const W=340,H=170,P=28,cw=(W-P-10)/7;
+  const bars=days.map((d,i)=>{const x=P+i*cw;const ph=pv[i]/maxV*(H-40),ch=dv[i]/maxV*(H-40);
+    return `<rect x="${x+cw*0.18}" y="${H-20-ph}" width="${cw*0.3}" height="${ph}" rx="2" fill="#C9DDEB"/><rect x="${x+cw*0.5}" y="${H-20-ch}" width="${cw*0.3}" height="${ch}" rx="2" fill="#0C5F94"/><text x="${x+cw/2}" y="${H-5}" font-size="11" text-anchor="middle" fill="#566B78">${DOW[pd(d).getDay()]}</text>`}).join('');
+  const pts=days.map((d,i)=>[P+i*cw+cw/2,H-20-dl[i]/maxL*(H-40)]).filter((p,i)=>dl[i]>0);
+  const line=pts.length>1?`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#E07A1F" stroke-width="2.5"/>`:'';
+  const dots=pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="#E07A1F"/>`).join('');
+  const grid=[0,0.5,1].map(f=>`<line x1="${P}" x2="${W-6}" y1="${H-20-f*(H-40)}" y2="${H-20-f*(H-40)}" stroke="#E3EBF0"/><text x="${P-4}" y="${H-16-f*(H-40)}" font-size="10" text-anchor="end" fill="#8A9BA6">${Math.round(maxV*f/100)/10}k</text>`).join('');
+  const bd=(title,key,cols)=>{const t={};wk.forEach(s=>s.sets.forEach(x=>{const ks=key==='equip'?x.equip:[x[key]];ks.forEach(k=>t[k]=(t[k]||0)+setM(x))}));
+    const tot=Object.values(t).reduce((a,b)=>a+b,0)||1, base=key==='equip'?vol||1:tot, ent=Object.entries(t).sort((a,b)=>b[1]-a[1]);
+    return `<h4>${title}</h4><div class="stack">${ent.map(([k,v])=>`<span style="width:${v/base*100}%;background:${cols[k]}"></span>`).join('')}</div>${ent.map(([k,v])=>`<div class="bdrow"><span class="sw" style="background:${cols[k]}"></span><span class="nm">${k}</span><span class="pc">${Math.round(v/base*100)}%</span><span class="m">${v.toLocaleString('en-IE')}m</span></div>`).join('')||'<p class="small muted" style="margin:0">—</p>'}`};
+  return `<div class="weeknav"><button data-act="trwk" data-d="-1" aria-label="Previous week">◀</button><div class="mid"><strong>Week of ${fd(mon)}</strong><span class="small muted">${ui.trSquad==='all'?'All squads':SQUADS[ui.trSquad].name}</span></div><button data-act="trwk" data-d="1" aria-label="Next week">▶</button></div>
+  <div class="stats" style="grid-template-columns:1fr 1fr 1fr"><div class="stat"><div class="n">${(vol/1000).toFixed(1)}k</div><div class="l">Metres</div></div><div class="stat"><div class="n">${load}</div><div class="l">Load</div></div><div class="stat"><div class="n">${wk.length}</div><div class="l">Sessions</div></div></div>
+  <div class="card"><h3>Volume and load</h3><svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Metres per day this week and last week, with training load">${grid}${bars}${line}${dots}</svg>
+  <div class="small muted" style="display:flex;gap:14px;flex-wrap:wrap;margin-top:6px"><span><span class="sw" style="display:inline-block;width:10px;height:10px;background:#0C5F94;border-radius:2px"></span> This week</span><span><span style="display:inline-block;width:10px;height:10px;background:#C9DDEB;border-radius:2px"></span> Last week</span><span><span style="display:inline-block;width:14px;height:3px;background:#E07A1F;vertical-align:middle"></span> Load</span></div></div>
+  <div class="card bd"><h3>Breakdown</h3>${bd('Energy zone','zone',Object.fromEntries(Object.entries(ZONES).map(([k,z])=>[k,z.c])))}${bd('Strokes','stroke',SCOL)}${bd('Composition','kind',KCOL)}${bd('Equipment','equip',ECOL)}</div>
+  <div class="card"><h3>Sessions this week</h3><ul class="list">${wk.sort((a,b)=>a.date.localeCompare(b.date)).map(t=>`<li><span><b>${fd(t.date)} · ${t.ampm}</b><br><span class="small muted">${SQUADS[t.squad].name} · ${t.sets.length} sets</span></span><span style="text-align:right"><b>${sesM(t).toLocaleString('en-IE')}m</b><br><button class="link" data-act="opentr" data-id="${t.id}" style="padding:0">Open</button></span></li>`).join('')||'<li class="muted">No sessions planned.</li>'}</ul>
+  <button class="btn btn-main" data-act="newtr" data-date="${ymd(today())}">➕ Plan a session</button></div>
+  <p class="small muted">Load = metres × zone weight (A1 ×1, A2 ×2, FAST ×3, MAX ×4) ÷ 100.</p>`;
+}
+function vCal(){
+  const base=today();base.setDate(1);base.setMonth(base.getMonth()+ui.trMonth);
+  const first=new Date(base),start=new Date(first);start.setDate(1-((first.getDay()+6)%7));
+  const L=trList(), T=ymd(today());
+  let cells='';for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const ds=ymd(d);
+    const ses=L.filter(t=>t.date===ds);
+    cells+=`<button class="dy ${d.getMonth()!==first.getMonth()?'out':''} ${ds===T?'today':''}" data-act="${ses.length===1?'opentr':'newtr'}" data-id="${ses[0]?ses[0].id:''}" data-date="${ds}"><span>${d.getDate()}</span>${ses.map(t=>`<span class="pill" style="background:${t.squad==='dol'?'#1FB5C9':t.squad==='sha'?'#0C5F94':'#06263A'}" title="${t.ampm} ${SQUADS[t.squad].name}">${t.ampm} ${SQUADS[t.squad].name.slice(0,3)}</span>`).join('')}</button>`}
+  return `<div class="weeknav"><button data-act="trmo" data-d="-1" aria-label="Previous month">◀</button><div class="mid"><strong>${monthName(first)}</strong><span class="small muted">Tap a day to plan or open a session</span></div><button data-act="trmo" data-d="1" aria-label="Next month">▶</button></div>
+  <div class="cal">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(x=>`<div class="hd">${x}</div>`).join('')}${cells}</div>
+  <p class="small muted">Dol = Dolphins · Sha = Sharks · Per = Performance. Days with more than one session: open them from the Week view.</p>`;
+}
+function vLib(){
+  return `<div class="card"><h3>Saved sets</h3><ul class="list">${db.library.map(l=>`<li><span><b>${esc(l.name)}</b> <span class="zone" style="background:${ZONES[l.zone].c}">${l.zone}</span><br><span class="small muted">${esc(setText(l))}${l.equip.length?' · '+l.equip.join(', '):''}${l.note?' · '+esc(l.note):''}</span></span><span style="text-align:right"><b>${setM(l)}m</b><br><button class="x" data-act="dellib" data-id="${l.id}" aria-label="Delete">×</button></span></li>`).join('')||'<li class="muted">No saved sets yet. Save one from the session builder.</li>'}</ul></div>`;
+}
+function vEditor(){
+  const t=ui.draft, tot=sesM(t), load=sesLoad(t);
+  const sel=(id,opts,v)=>`<select class="inp" id="${id}">${opts.map(o=>`<option ${o===v?'selected':''}>${o}</option>`).join('')}</select>`;
+  return `<button class="link" data-act="closetr">← Back to training</button><h2>${t.id?'Edit session':'Plan a session'} <span class="coachonly">Coach only</span></h2>
+  <div class="card"><div class="grid3f ed"><div class="field"><label for="eDate">Date</label><input class="inp" id="eDate" type="date" value="${t.date}" data-change="draft"></div>
+  <div class="field"><label for="eSquad">Squad</label><select class="inp" id="eSquad" data-change="draft">${Object.entries(SQUADS).map(([k,s])=>`<option value="${k}" ${k===t.squad?'selected':''}>${s.name}</option>`).join('')}</select></div>
+  <div class="field"><label for="eAm">Time</label><select class="inp" id="eAm" data-change="draft"><option ${t.ampm==='AM'?'selected':''}>AM</option><option ${t.ampm==='PM'?'selected':''}>PM</option></select></div></div></div>
+  <div class="stats"><div class="stat"><div class="n">${tot.toLocaleString('en-IE')}m</div><div class="l">Total</div></div><div class="stat"><div class="n">${load}</div><div class="l">Load</div></div></div>
+  <div class="card"><h3>Sets</h3>${t.sets.map((x,i)=>`<div class="setrow"><div class="what"><b>${esc(setText(x))}</b> <span class="zone" style="background:${ZONES[x.zone].c}">${x.zone}</span><br><span class="small muted">${x.equip.length?x.equip.join(', '):'No equipment'}${x.note?' · '+esc(x.note):''}</span></div>
+    <div style="text-align:right"><b>${setM(x)}m</b><br><button class="x" data-act="setup" data-i="${i}" ${i?'':'disabled'} aria-label="Move up">↑</button><button class="x" data-act="savelib" data-i="${i}" aria-label="Save to library" title="Save to library">☆</button><button class="x" data-act="delset" data-i="${i}" aria-label="Delete set">×</button></div></div>`).join('')||'<p class="muted" style="margin:0">No sets yet. Add one below.</p>'}</div>
+  <div class="card"><h3>➕ Add a set</h3>
+    <div class="field"><label for="libPick">From library</label><select class="inp" id="libPick"><option value="">— choose a saved set —</option>${db.library.map(l=>`<option value="${l.id}">${esc(l.name)} · ${esc(setText(l))}</option>`).join('')}</select></div>
+    <button class="btn btn-ghost" data-act="addlib">Add saved set</button>
+    <p class="small muted" style="text-align:center;margin:12px 0 8px">or build a new one</p>
+    <div class="grid3f"><div class="field"><label for="sReps">Reps</label><input class="inp" id="sReps" type="number" min="1" value="4"></div><div class="field"><label for="sDist">Distance (m)</label><input class="inp" id="sDist" type="number" min="25" step="25" value="100"></div><div class="field"><label for="sStroke">Stroke</label>${sel('sStroke',STROKES,'Free')}</div></div>
+    <div class="grid2f"><div class="field"><label for="sZone">Energy zone</label>${sel('sZone',Object.keys(ZONES),'A1')}</div><div class="field"><label for="sKind">Type</label>${sel('sKind',KINDS,'Swim')}</div></div>
+    <div class="eq">${EQUIP.map(e=>`<label><input type="checkbox" name="sEq" value="${e}"> ${e}</label>`).join('')}</div>
+    <div class="field"><label for="sNote">Note (optional)</label><input class="inp" id="sNote" placeholder="e.g. on 1:40, descend 1–4"></div>
+    <button class="btn btn-ghost" data-act="addset">Add set</button></div>
+  <button class="btn btn-main" data-act="savetr">Save session</button>
+  ${t.id?'<button class="btn btn-ghost" data-act="deltr" style="color:var(--red);border-color:var(--red)">Delete session</button>':''}`;
+}
+
 /* ---------- PARENT */
 function vHomeParent(f){
   const kids=kidsOf(f.id), o=famOwes(f.id), m=upMeets().find(m=>pd(m.deadline)>=today()&&kids.some(k=>!m.decl[k.id]));
@@ -309,15 +477,15 @@ function render(){
   if(!ui.who){root.innerHTML=vLogin();return}
   const r=role(), f=r==='parent'?fam(ui.who):null;
   if(r==='parent'&&!f){ui.who=null;return render()}
-  const tabs=r==='coach'?[['home','🏠','Home'],['squads','✅','Squads'],['meets','🏁','Meets'],['times','⏱','Times'],['fees','€','Fees']]
-    :r==='treas'?[['home','🏠','Home'],['fees','€','Fees']]
-    :[['home','🏠','Home'],['meets','🏁','Meets'],['times','⏱','Times'],['fees','€','Fees']];
-  if(!tabs.some(t=>t[0]===ui.tab))ui.tab='home';
+  const C=isCom(), K=isCoach();
+  const tabs=r==='parent'?[['home','🏠','Home'],['meets','🏁','Meets'],['times','⏱','Times'],['fees','€','Fees']]
+    :[['home','🏠','Home'],['squads','✅','Squads'],K&&['training','🏊','Training'],['meets','🏁','Meets'],K&&['times','⏱','Times'],C&&['fees','€','Fees']].filter(Boolean);
+  if(!tabs.some(t=>t[0]===ui.tab)&&!(ui.tab==='team'&&C))ui.tab='home';
   let body;
   if(r==='parent') body=ui.tab==='home'?vHomeParent(f):ui.tab==='meets'?vMeetsParent(f):ui.tab==='times'?vTimes(kidsOf(f.id)):vFeesParent(f);
-  else body=ui.tab==='home'?vHomeStaff():ui.tab==='squads'?vSquads():ui.tab==='meets'?vMeetsStaff():ui.tab==='times'?vTimes():vFeesStaff();
+  else body=ui.tab==='team'?vTeam():ui.tab==='home'?vHomeStaff():ui.tab==='squads'?vSquads():ui.tab==='training'?vTraining():ui.tab==='meets'?vMeetsStaff():ui.tab==='times'?vTimes():vFeesStaff();
   const pendDecl=f?upMeets().filter(m=>pd(m.deadline)>=today()&&kidsOf(f.id).some(k=>!m.decl[k.id])).length:0;
-  root.innerHTML=`<header><button class="badge-club" data-act="home" aria-label="Home">SM</button><div class="t"><h1>Sean Mac Club</h1><p>${r==='coach'?'Head Coach':r==='treas'?'Treasurer':esc(f.name)+' · parent'}</p></div><button class="sw" data-act="logout">Switch user</button></header><div class="rope"></div>
+  root.innerHTML=`<header><button class="badge-club" data-act="home" aria-label="Home">SM</button><div class="t"><h1>Sean Mac Club</h1><p>${r==='parent'?esc(f.name)+' · parent':esc(me().name)+(()=>{const r=[...new Set([shortRole(me().committee),me().coach].filter(Boolean))].filter(x=>x!==me().name);return r.length?' · '+esc(r.join(' · ')):''})()}</p></div><button class="sw" data-act="logout">Switch user</button></header><div class="rope"></div>
   <main>${body}</main>
   <nav class="tabs">${tabs.map(([k,ic,l])=>`<button class="${ui.tab===k?'on':''}" data-act="tab" data-tab="${k}"><span class="ic">${ic}</span>${l}${k==='meets'&&pendDecl?`<span class="dot">${pendDecl}</span>`:''}${k==='fees'&&f&&famOwes(f.id)?'<span class="dot">!</span>':''}</button>`).join('')}</nav>`;
 }
@@ -328,7 +496,7 @@ document.addEventListener('click',e=>{
   if(a==='login'){ui.who=d.who;ui.tab='home';ui.meet=null;ui.sw=null}
   else if(a==='logout'){ui.who=null}
   else if(a==='home'){ui.tab='home';ui.meet=null;window.scrollTo(0,0)}
-  else if(a==='tab'){ui.tab=d.tab;ui.meet=null;window.scrollTo(0,0)}
+  else if(a==='tab'){ui.tab=d.tab;ui.meet=null;ui.edit=null;window.scrollTo(0,0)}
   else if(a==='squad'){ui.squad=d.k;ui.ses=null}
   else if(a==='ses'){ui.ses+=Number(d.d)}
   else if(a==='att'){const at=db.attendance[d.key]=db.attendance[d.key]||{};if(at[d.id])delete at[d.id];else at[d.id]=true;save()}
@@ -357,11 +525,42 @@ document.addEventListener('click',e=>{
   else if(a==='addswimmer'){const fi=val('nFirst'),la=val('nLast'),bo=Number(val('nBorn'));if(!fi||!la||!bo){toast('Fill in name and year of birth');return}
     let fid=val('nFam');if(!fid){const pn=val('nParent');if(!pn){toast("Add the new parent's name");return}fid='f'+Date.now();db.families.push({id:fid,name:pn,email:'',ref:'SM-'+(1001+db.families.length)})}
     db.swimmers.push({id:'s'+Date.now(),first:fi,last:la,born:bo,gender:val('nGender'),squad:val('nSquad'),familyId:fid,consent:false});save();toast(fi+' added to '+SQUADS[val('nSquad')].name)}
+  else if(a==='trsq'){ui.trSquad=d.k}
+  else if(a==='trview'){ui.trView=d.v}
+  else if(a==='trwk'){ui.trWeek+=Number(d.d)}
+  else if(a==='trmo'){ui.trMonth+=Number(d.d)}
+  else if(a==='newtr'){const sq=ui.trSquad==='all'?'sha':ui.trSquad;ui.draft={id:null,date:d.date||ymd(today()),squad:sq,ampm:'PM',title:'',sets:[]};ui.edit=true;window.scrollTo(0,0)}
+  else if(a==='opentr'){const t=db.training.find(x=>x.id===d.id);if(!t)return;ui.draft=JSON.parse(JSON.stringify(t));ui.edit=true;window.scrollTo(0,0)}
+  else if(a==='closetr'){ui.edit=null;ui.draft=null}
+  else if(a==='addset'){const reps=Math.max(1,parseInt(val('sReps'),10)||1),dist=Math.max(25,parseInt(val('sDist'),10)||0);
+    ui.draft.sets.push({reps,dist,stroke:val('sStroke'),zone:val('sZone'),kind:val('sKind'),equip:[...document.querySelectorAll('input[name=sEq]:checked')].map(x=>x.value),note:val('sNote')});toast('Set added')}
+  else if(a==='addlib'){const l=db.library.find(x=>x.id===val('libPick'));if(!l){toast('Choose a saved set first');return}ui.draft.sets.push({reps:l.reps,dist:l.dist,stroke:l.stroke,zone:l.zone,kind:l.kind,equip:l.equip.slice(),note:l.note});toast(l.name+' added')}
+  else if(a==='delset'){ui.draft.sets.splice(Number(d.i),1)}
+  else if(a==='setup'){const i=Number(d.i),S_=ui.draft.sets;[S_[i-1],S_[i]]=[S_[i],S_[i-1]]}
+  else if(a==='savelib'){const x=ui.draft.sets[Number(d.i)],n=prompt('Name for this set:',setText(x));if(!n)return;db.library.push({id:'L'+Date.now(),name:n,...JSON.parse(JSON.stringify(x))});save();toast('Saved to set library')}
+  else if(a==='dellib'){if(!confirm('Delete this saved set?'))return;db.library=db.library.filter(l=>l.id!==d.id);save()}
+  else if(a==='savetr'){const t=ui.draft;if(!t.sets.length){toast('Add at least one set');return}
+    t.title=SQUADS[t.squad].name+' – '+fd(t.date);
+    if(t.id){const i=db.training.findIndex(x=>x.id===t.id);db.training[i]=t}else{t.id='t'+Date.now();db.training.push(t)}
+    save();ui.edit=null;ui.draft=null;toast('Session saved · '+sesM(t).toLocaleString('en-IE')+'m')}
+  else if(a==='deltr'){if(!confirm('Delete this session?'))return;db.training=db.training.filter(x=>x.id!==ui.draft.id);save();ui.edit=null;ui.draft=null;toast('Session deleted')}
+  else if(a==='addstaff'){if(!canManageTeam())return;const nmv=val('tName'),em=val('tEmail'),cr=val('tCom')||null,kr=val('tCoach')||null;
+    if(!nmv){toast('Add a name');return} if(!cr&&!kr){toast('Choose a committee role, a coaching role, or both');return}
+    if(cr&&committee().length>=CMAX){toast('Committee is full (max '+CMAX+')');return}
+    if(cr&&REQUIRED_ROLES.includes(cr)&&db.staff.some(y=>y.committee===cr)){toast(shortRole(cr)+' is already filled');return}
+    if(!em){toast('Add an email: each person needs their own login');return}
+    const same=db.staff.find(y=>(y.email||'').toLowerCase()===em.toLowerCase()||y.name.trim().toLowerCase()===nmv.toLowerCase());
+    if(same){toast(same.name+' is already in the app ('+shortRole(same.committee||same.coach)+'). One person can only hold one committee role.');return}
+    db.staff.push({id:'u'+Date.now(),name:nmv,email:em,committee:cr,coach:kr});save();toast(nmv+' added')}
+  else if(a==='delstaff'){if(!canManageTeam())return;const x=db.staff.find(y=>y.id===d.id);if(!x)return;
+    if(x.committee&&committee().length<=CMIN){toast('The committee needs at least '+CMIN+' members. Add someone first.');return}
+    if(!confirm('Remove '+x.name+'?'+(REQUIRED_ROLES.includes(x.committee)?'\n\n'+shortRole(x.committee)+' is a required role: the club must fill it again.':'')))return;db.staff=db.staff.filter(y=>y.id!==d.id);save();toast(x.name+' removed')}
   else if(a==='reset'){if(!confirm('Reset all demo data?'))return;try{localStorage.removeItem(KEY)}catch(e){}db=seed();save();ui.who=null;toast('Demo reset')}
   else return;
   render();
 });
-document.addEventListener('change',e=>{if(e.target.dataset.change==='pick'){ui.sw=e.target.value;render()}});
+document.addEventListener('change',e=>{if(e.target.dataset.change==='pick'){ui.sw=e.target.value;render()}
+  if(e.target.dataset.change==='draft'&&ui.draft){ui.draft.date=val('eDate')||ui.draft.date;ui.draft.squad=val('eSquad');ui.draft.ampm=val('eAm')}});
 render();
 </script>
 </body>
