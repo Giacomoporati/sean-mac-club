@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sean Mac Club – demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--deep:#06263A;--pool:#0C5F94;--aqua:#1FB5C9;--aqua-bg:#E3F6F9;--red:#D7263D;--red-bg:#FCE7EA;--yellow:#B07D00;--yellow-bg:#FFF4D1;--green:#11865A;--green-bg:#E2F5EC;--bg:#EEF4F7;--ink:#0B1F2A;--muted:#566B78;--line:#D5E1E8;--card:#fff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{font-family:"Barlow",system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.45;padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+:focus-visible{outline:3px solid var(--aqua);outline-offset:2px}
+.demo{background:var(--yellow-bg);color:#6B4D00;text-align:center;font-weight:600;font-size:13px;padding:6px 12px}
+header{background:var(--deep);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.badge-club{width:46px;height:46px;border-radius:12px;background:var(--aqua);color:var(--deep);display:flex;align-items:center;justify-content:center;font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:22px;flex:none;border:none;cursor:pointer}
+header .t{flex:1;min-width:0}
+header h1{margin:0;font-family:"Barlow Condensed",sans-serif;font-size:24px;font-weight:700;line-height:1.05}
+header p{margin:2px 0 0;font-size:14px;color:#A9C6D6}
+header button.sw{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.35);border-radius:10px;padding:8px 12px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.rope{height:8px;background:repeating-linear-gradient(90deg,var(--red) 0 16px,#fff 16px 22px,var(--pool) 22px 38px,#fff 38px 44px)}
+main{max-width:680px;margin:0 auto;padding:18px 16px}
+h2{font-family:"Barlow Condensed",sans-serif;font-size:32px;font-weight:700;margin:0 0 14px;line-height:1}
+h3{font-family:"Barlow Condensed",sans-serif;font-size:21px;font-weight:700;margin:0 0 8px}
+.card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:14px;border:1px solid var(--line)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.muted{color:var(--muted)}.small{font-size:14px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.stat .n{font-family:"Barlow Condensed",sans-serif;font-size:38px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.stat .l{font-size:14px;color:var(--muted);font-weight:600;margin-top:4px}
+.stat.warn .n{color:var(--red)}.stat.good .n{color:var(--green)}
+.btn{display:block;width:100%;border:none;border-radius:12px;min-height:50px;padding:10px 16px;font:inherit;font-weight:700;font-size:16px;cursor:pointer;text-align:center;margin-top:10px}
+.btn-main{background:var(--pool);color:#fff}
+.btn-ghost{background:#fff;color:var(--pool);border:2px solid var(--pool)}
+.btn-sm{display:inline-block;width:auto;min-height:38px;padding:6px 12px;font-size:14px;margin:0}
+.btn:disabled{opacity:.4;cursor:default}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font:inherit;font-size:15px;font-weight:600;cursor:pointer;color:var(--ink)}
+.chip.on{background:var(--deep);border-color:var(--deep);color:#fff}
+.chip.ev{padding:5px 11px;font-size:14px}
+.chip.ev.on{background:var(--aqua);border-color:var(--aqua);color:var(--deep)}
+.tag{display:inline-block;font-size:13px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.t-green{background:var(--green-bg);color:var(--green)}.t-red{background:var(--red-bg);color:var(--red)}.t-yellow{background:var(--yellow-bg);color:var(--yellow)}.t-blue{background:var(--aqua-bg);color:var(--pool)}.t-grey{background:#EDF1F4;color:#44525C}
+.t-gold{background:#FFE9A8;color:#7A5500}.t-silver{background:#E6EAEE;color:#3E4A53}
+.list{list-style:none;margin:0;padding:0}
+.list li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.list li:first-child{border-top:none}
+.time{font-family:"Barlow Condensed",sans-serif;font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.att{display:flex;align-items:center;gap:12px;width:100%;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;font-size:17px;cursor:pointer;margin-bottom:8px;text-align:left;color:var(--ink)}
+.att .box{width:28px;height:28px;border-radius:8px;border:2px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff}
+.att.on{border-color:var(--green);background:var(--green-bg)}.att.on .box{background:var(--green);border-color:var(--green)}
+.weeknav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.weeknav button{width:50px;height:50px;border:none;border-radius:12px;background:var(--deep);color:#fff;font-size:20px;cursor:pointer;flex:none}
+.weeknav button:disabled{opacity:.3}
+.weeknav .mid{flex:1;text-align:center}.weeknav strong{display:block;font-family:"Barlow Condensed",sans-serif;font-size:22px}
+.field{margin-bottom:10px}
+.field label{display:block;font-size:14px;font-weight:700;margin-bottom:4px}
+.inp{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+.grid2f{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.notice{border-left:4px solid var(--aqua);padding:4px 0 4px 12px;margin:10px 0}
+.notice .d{font-size:13px;color:var(--muted)}
+.decl{display:flex;gap:8px}
+.decl .btn{margin:0;min-height:42px}
+.yes.on{background:var(--green);color:#fff;border-color:var(--green)}
+.no.on{background:var(--red);color:#fff;border-color:var(--red)}
+.bank{font-weight:700;background:var(--aqua-bg);border-radius:8px;padding:8px 10px;margin:4px 0 10px;letter-spacing:.02em}
+.who{display:flex;align-items:center;gap:12px;width:100%;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:12px;font:inherit;font-size:16px;cursor:pointer;margin-bottom:8px;text-align:left;color:var(--ink)}
+.who .av{width:42px;height:42px;border-radius:10px;background:var(--aqua-bg);color:var(--pool);display:flex;align-items:center;justify-content:center;font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:20px;flex:none}
+.who.staff .av{background:var(--deep);color:#fff}
+.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;background:#fff;border-top:1px solid var(--line);padding:4px 4px calc(4px + env(safe-area-inset-bottom));z-index:10}
+.tabs button{flex:1;min-height:62px;border:none;background:transparent;color:var(--muted);font:inherit;font-size:13px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-top:3px solid transparent;position:relative}
+.tabs button.on{color:var(--deep);border-top-color:var(--red);font-weight:700}
+.tabs .ic{font-size:20px;line-height:1.15}
+.dot{position:absolute;top:4px;right:22%;background:var(--red);color:#fff;border-radius:999px;font-size:11px;min-width:20px;height:20px;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.toast{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto;background:var(--deep);color:#fff;border-radius:12px;padding:13px 16px;z-index:20;font-size:15px;font-weight:600}
+.toast[hidden]{display:none}
+.link{background:none;border:none;color:var(--pool);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer;padding:6px 0}
+footer{text-align:center;font-size:12px;color:var(--muted);padding:10px 16px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="demo">Demo · made-up swimmers and families · changes save in this browser only</div>
+<div id="root"></div>
+<div id="toast" class="toast" hidden></div>
+<footer>Sean Mac Club · prototype v0.1</footer>
+<script>
+const KEY='seanMacClubDemo_v1';
+const EVENTS=['50 Free','100 Free','200 Free','50 Back','100 Back','50 Breast','100 Breast','50 Fly','100 Fly','100 IM','200 IM'];
+const MULT={'50 Free':1,'100 Free':2.2,'200 Free':4.75,'50 Back':1.12,'100 Back':2.45,'50 Breast':1.26,'100 Breast':2.75,'50 Fly':1.1,'100 Fly':2.5,'100 IM':2.5,'200 IM':5.3};
+const SQUADS={dol:{name:'Dolphins',ages:'8–10',ses:[[1,'17:00','18:00'],[3,'17:00','18:00']]},
+  sha:{name:'Sharks',ages:'11–13',ses:[[1,'18:00','19:00'],[3,'18:00','19:00'],[5,'18:00','19:00']]},
+  per:{name:'Performance',ages:'14+',ses:[[2,'19:00','20:30'],[4,'19:00','20:30'],[6,'08:00','10:00']]}};
+const FEE=35, DAY=864e5, DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const BANK={name:'Sean Mac Club (sample)',iban:'IE00 SAMP 0000 0000 0000 00',bic:'SAMPIE00'};
+
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const pd=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const today=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
+const addD=(s,n)=>{const d=pd(s);d.setDate(d.getDate()+n);return ymd(d)};
+const fd=s=>pd(s).toLocaleDateString('en-IE',{weekday:'short',day:'numeric',month:'short'});
+const eur=n=>'€'+Number(n).toLocaleString('en-IE');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ft=h=>{if(h==null)return '—';const m=Math.floor(h/6000),s=(h%6000)/100;return m?m+':'+s.toFixed(2).padStart(5,'0'):s.toFixed(2)};
+const pt=str=>{str=String(str).trim().replace(',','.');const m=str.match(/^(?:(\d+):)?(\d{1,2})(?:\.(\d{1,2}))?$/);if(!m)return null;const hs=(m[3]||'0').padEnd(2,'0');const v=(+(m[1]||0))*6000+(+m[2])*100+(+hs);return v>0?v:null};
+const val=id=>{const e=document.getElementById(id);return e?e.value.trim():''};
+const monthName=d=>d.toLocaleDateString('en-IE',{month:'long',year:'numeric'});
+
+function rng(seed){return()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646}}
+
+function seed(){
+  const R=rng(42), t=today(), T=ymd(t), yr=t.getFullYear();
+  const fam=[['kel','Siobhán Kelly'],['byr','Mark Byrne'],['doy','Clare Doyle'],['mur','Paul Murphy'],['wal','Niamh Walsh'],['ros','Marco Rossi'],['nol','Emma Nolan'],['has','Leila Hassan'],['obr',"Dermot O'Brien"],['bre','Ciara Brennan']];
+  const families=fam.map(([id,name],i)=>({id,name,email:name.split(' ')[0].toLowerCase()+'@example.com',ref:'SM-'+(1001+i)}));
+  const S=(id,first,last,age,g,squad,familyId,consent)=>({id,first,last,born:yr-age,gender:g,squad,familyId,consent});
+  const swimmers=[S('s1','Aoife','Kelly',9,'F','dol','kel',true),S('s2','Cian','Kelly',12,'M','sha','kel',true),S('s3','Saoirse','Byrne',10,'F','dol','byr',false),
+    S('s4','Oisín','Doyle',13,'M','sha','doy',true),S('s5','Ella','Doyle',11,'F','sha','doy',true),S('s6','Fionn','Murphy',15,'M','per','mur',true),
+    S('s7','Grace','Walsh',14,'F','per','wal',false),S('s8','Luca','Rossi',12,'M','sha','ros',true),S('s9','Hannah','Nolan',16,'F','per','nol',true),
+    S('s10','Jack','Nolan',9,'M','dol','nol',true),S('s11','Amira','Hassan',11,'F','sha','has',true),S('s12',"Tadhg","O'Brien",15,'M','per','obr',false),
+    S('s13','Zoe','Brennan',10,'F','dol','bre',true)];
+  const results=[], meetsPast=[['Spring Time Trial',-170],['Summer Club Gala',-110],['Autumn Time Trial',-24]];
+  swimmers.forEach(sw=>{
+    const age=yr-sw.born, base=(50-(age-8)*2.5-(sw.gender==='M'?1.2:0))*100;
+    const evs=EVENTS.filter(()=>R()<0.55).slice(0,6); if(!evs.includes('50 Free'))evs.unshift('50 Free');
+    evs.forEach(ev=>{let tm=Math.round(base*MULT[ev]*(1.04+R()*0.08));
+      meetsPast.forEach(([mn,off],k)=>{if(k===0&&R()<0.4)return;results.push({id:'r'+results.length,swimmerId:sw.id,event:ev,time:tm,date:addD(T,off),meet:mn});tm=Math.round(tm*(0.965+R()*0.03))});
+    });
+  });
+  const sessions=[]; // attendance seeded for past 4 weeks
+  const attendance={};
+  for(let d=-28;d<=0;d++){const ds=addD(T,d),dw=pd(ds).getDay();
+    Object.entries(SQUADS).forEach(([k,sq])=>{if(sq.ses.some(s=>s[0]===dw)&&d<0){attendance[k+'_'+ds]=Object.fromEntries(swimmers.filter(s=>s.squad===k&&R()<0.82).map(s=>[s.id,true]))}})}
+  const meets=[
+    {id:'m1',name:'Dublin Development Meet',venue:'Dublin (sample venue)',date:addD(T,20),deadline:addD(T,8),fee:7,events:['50 Free','100 Free','50 Back','50 Breast','50 Fly','100 IM'],decl:{s2:'yes',s4:'yes',s5:'no',s8:'yes',s11:'yes',s6:'yes',s9:'yes'},entries:{s2:['50 Free','100 Free'],s6:['100 Free','100 IM']},billed:{}},
+    {id:'m2',name:'Sean Mac Christmas Gala',venue:'Sean McDermott Street pool',date:addD(T,45),deadline:addD(T,32),fee:5,events:EVENTS.slice(),decl:{s1:'yes',s3:'yes'},entries:{},billed:{}},
+    {id:'m0',name:'Autumn Time Trial',venue:'Sean McDermott Street pool',date:addD(T,-24),deadline:addD(T,-31),fee:0,events:EVENTS.slice(),decl:{},entries:{},billed:{}}];
+  const mPrev=new Date(t.getFullYear(),t.getMonth()-1,1), mNow=new Date(t.getFullYear(),t.getMonth(),1);
+  const charges=[];
+  families.forEach((f,i)=>{const kids=swimmers.filter(s=>s.familyId===f.id).length;
+    charges.push({id:'c'+charges.length,familyId:f.id,desc:'Membership – '+monthName(mPrev)+(kids>1?' ('+kids+' swimmers)':''),amount:FEE*kids,status:i===3?'due':'paid',due:ymd(new Date(mPrev.getFullYear(),mPrev.getMonth(),7))});
+    charges.push({id:'c'+charges.length,familyId:f.id,desc:'Membership – '+monthName(mNow)+(kids>1?' ('+kids+' swimmers)':''),amount:FEE*kids,status:i%3===0?'paid':'due',due:ymd(new Date(mNow.getFullYear(),mNow.getMonth(),7))});
+  });
+  const notices=[{id:'n1',date:addD(T,-2),text:'Pool closed this Saturday for maintenance. Performance squad: dryland session in the hall at 09:00 instead.'},
+    {id:'n2',date:addD(T,-6),text:'Dublin Development Meet: please declare by '+fd(addD(T,8))+' in the Meets tab.'}];
+  return {families,swimmers,results,attendance,meets,charges,notices};
+}
+function load(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}}
+let db=load(); if(!db||!db.swimmers){db=seed();save()}
+let ui={who:null,tab:null,squad:'sha',ses:null,meet:null,sw:null,famOpen:null};
+let toastT;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2600)}
+
+const sw=id=>db.swimmers.find(s=>s.id===id);
+const fam=id=>db.families.find(f=>f.id===id);
+const nm=s=>s.first+' '+s.last;
+const ageOf=s=>today().getFullYear()-s.born;
+const kidsOf=fid=>db.swimmers.filter(s=>s.familyId===fid);
+const isLate=c=>c.status==='due'&&pd(c.due)<today();
+const famOwes=fid=>db.charges.filter(c=>c.familyId===fid&&c.status==='due').reduce((a,c)=>a+c.amount,0);
+function sessionDates(sq,from,to){const out=[];for(let d=from;d<=to;d++){const ds=addD(ymd(today()),d),dw=pd(ds).getDay();const s=SQUADS[sq].ses.find(x=>x[0]===dw);if(s)out.push({date:ds,start:s[1],end:s[2]})}return out}
+function attPct(s){const past=sessionDates(s.squad,-28,-1);if(!past.length)return null;const n=past.filter(x=>(db.attendance[s.squad+'_'+x.date]||{})[s.id]).length;return Math.round(100*n/past.length)}
+function nextSession(sq){return sessionDates(sq,0,8)[0]}
+function pb(sid,ev){const r=db.results.filter(x=>x.swimmerId===sid&&x.event===ev).sort((a,b)=>a.time-b.time);return r[0]||null}
+function prevBest(sid,ev,p){const r=db.results.filter(x=>x.swimmerId===sid&&x.event===ev&&x.date<p.date).sort((a,b)=>a.time-b.time);return r[0]||null}
+const STD={silver:3800,gold:3300};
+function stdTag(ev,t){if(t<=Math.round(STD.gold*MULT[ev]))return '<span class="tag t-gold">Gold</span>';if(t<=Math.round(STD.silver*MULT[ev]))return '<span class="tag t-silver">Silver</span>';return ''}
+const upMeets=()=>db.meets.filter(m=>pd(m.date)>=today()).sort((a,b)=>a.date.localeCompare(b.date));
+const pastMeets=()=>db.meets.filter(m=>pd(m.date)<today()).sort((a,b)=>b.date.localeCompare(a.date));
+const role=()=>ui.who==='coach'?'coach':ui.who==='treas'?'treas':'parent';
+
+/* ---------- LOGIN */
+function vLogin(){
+  return `<header><button class="badge-club" data-act="home" aria-label="Home">SM</button><div class="t"><h1>Sean Mac Club</h1><p>Sean McDermott Street pool, Dublin 1</p></div></header><div class="rope"></div>
+  <main><h2>Who's using the app?</h2><p class="small muted" style="margin-top:-6px">Demo only: in the real app everyone logs in with email and password.</p>
+  <button class="who staff" data-act="login" data-who="coach"><span class="av">HC</span><span><b>Head Coach</b><br><span class="small muted">Squads, attendance, meets, times, fees</span></span></button>
+  <button class="who staff" data-act="login" data-who="treas"><span class="av">€</span><span><b>Treasurer</b><br><span class="small muted">Fees and family accounts</span></span></button>
+  <p class="small muted" style="margin:16px 0 8px">Or view as a parent:</p>
+  ${db.families.map(f=>`<button class="who" data-act="login" data-who="${f.id}"><span class="av">${esc(f.name[0])}</span><span><b>${esc(f.name)}</b><br><span class="small muted">Parent of ${kidsOf(f.id).map(s=>esc(s.first)).join(' & ')}</span></span></button>`).join('')}
+  <button class="btn btn-ghost" data-act="reset">Reset demo data</button></main>`;
+}
+
+/* ---------- COACH / STAFF */
+function vHomeStaff(){
+  const sw_=db.swimmers, att=sw_.map(attPct).filter(x=>x!=null), avg=att.length?Math.round(att.reduce((a,b)=>a+b,0)/att.length):0;
+  const owed=db.charges.filter(c=>c.status==='due').reduce((a,c)=>a+c.amount,0), late=db.charges.filter(isLate).length;
+  const nm_=upMeets()[0];
+  let h=`<h2>Club overview</h2><div class="stats">
+    <div class="stat"><div class="n">${sw_.length}</div><div class="l">Active swimmers</div></div>
+    <div class="stat good"><div class="n">${avg}%</div><div class="l">Attendance, last 4 weeks</div></div>
+    <div class="stat ${owed?'warn':''}"><div class="n">${eur(owed)}</div><div class="l">Fees owed · ${late} overdue</div></div>
+    <div class="stat"><div class="n">${nm_?Object.values(nm_.decl).filter(v=>v==='yes').length:0}</div><div class="l">Declared for next meet</div></div></div>`;
+  h+=`<div class="card"><h3>Next sessions</h3><ul class="list">${Object.entries(SQUADS).map(([k,s])=>{const n=nextSession(k);return `<li><span><b>${s.name}</b> <span class="small muted">${s.ages}</span></span><span class="small">${n?fd(n.date)+' · '+n.start:'—'}</span></li>`}).join('')}</ul></div>`;
+  if(nm_) h+=`<div class="card"><div class="row"><h3>${esc(nm_.name)}</h3><span class="tag t-blue">${fd(nm_.date)}</span></div><p class="small muted" style="margin:0">Declarations close ${fd(nm_.deadline)}</p><button class="btn btn-ghost" data-act="openmeet" data-id="${nm_.id}">Manage entries</button></div>`;
+  if(role()==='coach') h+=`<div class="card"><h3>📌 Post a notice</h3><textarea class="inp" id="noticeTxt" rows="3" placeholder="e.g. Training cancelled on Friday"></textarea><button class="btn btn-main" data-act="addnotice">Post to all parents</button></div>`;
+  h+=vNotices(role()==='coach');
+  return h;
+}
+function vNotices(canDel){return `<div class="card"><h3>Noticeboard</h3>${db.notices.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(n=>`<div class="notice"><div class="d">${fd(n.date)}${canDel?` · <button class="link" data-act="delnotice" data-id="${n.id}" style="padding:0">Delete</button>`:''}</div>${esc(n.text)}</div>`).join('')||'<p class="muted" style="margin:0">No notices.</p>'}</div>`}
+
+function vSquads(){
+  const k=ui.squad, sq=SQUADS[k], list=db.swimmers.filter(s=>s.squad===k).sort((a,b)=>a.last.localeCompare(b.last));
+  const dates=sessionDates(k,-28,14); let i=ui.ses; if(i==null||i>=dates.length){i=dates.findIndex(x=>x.date>=ymd(today()));if(i<0)i=dates.length-1;const past=dates.filter(x=>x.date<=ymd(today()));if(past.length&&dates[i]&&dates[i].date>ymd(today()))i=past.length-1;ui.ses=i}
+  const d=dates[i], key=k+'_'+d.date, at=db.attendance[key]||{}, here=list.filter(s=>at[s.id]).length;
+  let h=`<h2>Squads</h2><div class="chips">${Object.entries(SQUADS).map(([kk,s])=>`<button class="chip ${kk===k?'on':''}" data-act="squad" data-k="${kk}">${s.name} (${db.swimmers.filter(x=>x.squad===kk).length})</button>`).join('')}</div>
+  <div class="weeknav"><button data-act="ses" data-d="-1" ${i<=0?'disabled':''} aria-label="Previous session">◀</button><div class="mid"><strong>${fd(d.date)}</strong><span class="small muted">${sq.name} · ${d.start}–${d.end}</span></div><button data-act="ses" data-d="1" ${i>=dates.length-1?'disabled':''} aria-label="Next session">▶</button></div>
+  <div class="card"><div class="row"><h3>Attendance</h3><b>${here}/${list.length}</b></div>
+  ${list.map(s=>`<button class="att ${at[s.id]?'on':''}" data-act="att" data-id="${s.id}" data-key="${key}"><span class="box">${at[s.id]?'✓':''}</span><span style="flex:1">${esc(nm(s))}</span>${famOwes(s.familyId)&&db.charges.some(c=>c.familyId===s.familyId&&isLate(c))?'<span class="tag t-red">€ overdue</span>':''}</button>`).join('')}</div>
+  <div class="card"><h3>Swimmers in ${sq.name}</h3><ul class="list">${list.map(s=>{const p=attPct(s);return `<li><span><b>${esc(nm(s))}</b><br><span class="small muted">Age ${ageOf(s)} · ${s.gender==='F'?'Female':'Male'} · ${esc(fam(s.familyId).name)} ${s.consent?'· 📸':''}</span></span><span class="tag ${p>=80?'t-green':p>=60?'t-yellow':'t-red'}">${p==null?'—':p+'%'}</span></li>`}).join('')}</ul></div>
+  <div class="card"><h3>➕ Add a swimmer</h3>
+    <div class="grid2f"><div class="field"><label for="nFirst">First name</label><input class="inp" id="nFirst"></div><div class="field"><label for="nLast">Last name</label><input class="inp" id="nLast"></div></div>
+    <div class="grid2f"><div class="field"><label for="nBorn">Year of birth</label><input class="inp" id="nBorn" type="number" min="1990" max="2025" placeholder="2014"></div>
+    <div class="field"><label for="nGender">Gender</label><select class="inp" id="nGender"><option value="F">Female</option><option value="M">Male</option></select></div></div>
+    <div class="field"><label for="nSquad">Squad</label><select class="inp" id="nSquad">${Object.entries(SQUADS).map(([kk,s])=>`<option value="${kk}" ${kk===k?'selected':''}>${s.name}</option>`).join('')}</select></div>
+    <div class="field"><label for="nFam">Family</label><select class="inp" id="nFam"><option value="">New family…</option>${db.families.map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join('')}</select></div>
+    <div class="field"><label for="nParent">New parent's name (if new family)</label><input class="inp" id="nParent" placeholder="Parent / guardian"></div>
+    <button class="btn btn-main" data-act="addswimmer">Add swimmer</button></div>`;
+  return h;
+}
+
+function vMeetsStaff(){
+  if(ui.meet){const m=db.meets.find(x=>x.id===ui.meet);if(m)return vMeetDetail(m)}
+  const card=m=>{const y=Object.values(m.decl).filter(v=>v==='yes').length,n=Object.values(m.decl).filter(v=>v==='no').length;
+    return `<div class="card"><div class="row"><h3>${esc(m.name)}</h3><span class="tag ${pd(m.date)<today()?'t-grey':'t-blue'}">${fd(m.date)}</span></div><p class="small muted" style="margin:0 0 6px">${esc(m.venue)}${m.fee?' · '+eur(m.fee)+' per event':''}</p>
+    ${pd(m.date)>=today()?`<p class="small" style="margin:0">✅ ${y} yes · ❌ ${n} no · ⏳ ${db.swimmers.length-y-n} not declared · closes ${fd(m.deadline)}</p><button class="btn btn-ghost" data-act="openmeet" data-id="${m.id}">Manage entries</button>`:''}</div>`};
+  return `<h2>Meets</h2>${upMeets().map(card).join('')}
+  <div class="card"><h3>➕ New meet</h3>
+    <div class="field"><label for="mName">Name</label><input class="inp" id="mName" placeholder="e.g. Leinster Winter Gala"></div>
+    <div class="field"><label for="mVenue">Venue</label><input class="inp" id="mVenue"></div>
+    <div class="grid2f"><div class="field"><label for="mDate">Meet date</label><input class="inp" id="mDate" type="date"></div><div class="field"><label for="mDead">Declare by</label><input class="inp" id="mDead" type="date"></div></div>
+    <div class="field"><label for="mFee">Entry fee per event (€)</label><input class="inp" id="mFee" type="number" min="0" value="6"></div>
+    <button class="btn btn-main" data-act="addmeet">Create meet</button></div>
+  <h3 style="margin-top:20px">Past meets</h3>${pastMeets().map(card).join('')}`;
+}
+function vMeetDetail(m){
+  const yes=db.swimmers.filter(s=>m.decl[s.id]==='yes'), no=db.swimmers.filter(s=>m.decl[s.id]==='no'), pend=db.swimmers.filter(s=>!m.decl[s.id]);
+  const tot=Object.values(m.entries).reduce((a,e)=>a+e.length,0);
+  return `<button class="link" data-act="closemeet">← All meets</button><h2>${esc(m.name)}</h2>
+  <div class="card"><p style="margin:0">${fd(m.date)} · ${esc(m.venue)}<br><span class="small muted">Declarations close ${fd(m.deadline)} · ${eur(m.fee)} per event</span></p></div>
+  <div class="card"><div class="row"><h3>Entries</h3><b>${tot} swims</b></div><p class="small muted" style="margin:0 0 6px">Tap events for each swimmer who declared yes. PB shown on each event.</p>
+  ${yes.map(s=>`<div style="padding:10px 0;border-top:1px solid var(--line)"><b>${esc(nm(s))}</b> <span class="small muted">${SQUADS[s.squad].name} · age ${ageOf(s)}</span>
+    <div class="chips" style="margin:8px 0 0">${m.events.map(ev=>{const p=pb(s.id,ev),on=(m.entries[s.id]||[]).includes(ev);return `<button class="chip ev ${on?'on':''}" data-act="entry" data-s="${s.id}" data-ev="${esc(ev)}">${esc(ev)}${p?' · '+ft(p.time):''}</button>`}).join('')}</div></div>`).join('')||'<p class="muted" style="margin:0">Nobody has declared yes yet.</p>'}
+  <button class="btn btn-main" data-act="billmeet" ${tot?'':'disabled'}>Confirm entries & bill families</button></div>
+  <div class="card"><h3>❌ Not swimming (${no.length})</h3><p style="margin:0">${no.map(s=>esc(nm(s))).join(', ')||'—'}</p></div>
+  <div class="card"><h3>⏳ Not declared (${pend.length})</h3><p style="margin:0">${pend.map(s=>esc(nm(s))).join(', ')||'—'}</p></div>`;
+}
+
+function vTimes(kids){
+  const pool=kids||db.swimmers.slice().sort((a,b)=>a.last.localeCompare(b.last));
+  if(!ui.sw||!pool.some(s=>s.id===ui.sw)) ui.sw=pool[0]&&pool[0].id;
+  const s=sw(ui.sw); if(!s) return '<h2>Times</h2><p>No swimmers.</p>';
+  const evs=EVENTS.filter(ev=>pb(s.id,ev));
+  let h=`<h2>Personal bests</h2>`;
+  h+= kids?`<div class="chips">${pool.map(k=>`<button class="chip ${k.id===s.id?'on':''}" data-act="pick" data-id="${k.id}">${esc(k.first)}</button>`).join('')}</div>`
+    :`<div class="field"><label for="pickSw">Swimmer</label><select class="inp" id="pickSw" data-change="pick">${pool.map(k=>`<option value="${k.id}" ${k.id===s.id?'selected':''}>${esc(k.last+', '+k.first)} · ${SQUADS[k.squad].name}</option>`).join('')}</select></div>`;
+  h+=`<div class="card"><div class="row"><h3>${esc(nm(s))}</h3><span class="small muted">Age ${ageOf(s)} · ${SQUADS[s.squad].name}</span></div>
+  <p class="small muted" style="margin:0 0 4px">Short course (25m). Club standards: <span class="tag t-silver">Silver</span> <span class="tag t-gold">Gold</span></p>
+  <ul class="list">${evs.map(ev=>{const p=pb(s.id,ev),pr=prevBest(s.id,ev,p),dlt=pr?pr.time-p.time:0;return `<li><span><b>${esc(ev)}</b> ${stdTag(ev,p.time)}<br><span class="small muted">${fd(p.date)} · ${esc(p.meet)}</span></span><span style="text-align:right"><span class="time">${ft(p.time)}</span>${dlt>0?`<br><span class="small" style="color:var(--green);font-weight:700">−${(dlt/100).toFixed(2)}s</span>`:''}</span></li>`}).join('')||'<li class="muted">No times yet.</li>'}</ul></div>`;
+  if(!kids) h+=`<div class="card"><h3>⏱ Add a result</h3>
+    <div class="grid2f"><div class="field"><label for="rEv">Event</label><select class="inp" id="rEv">${EVENTS.map(e=>`<option>${e}</option>`).join('')}</select></div><div class="field"><label for="rTime">Time</label><input class="inp" id="rTime" placeholder="1:15.61 or 33.54" inputmode="decimal"></div></div>
+    <div class="grid2f"><div class="field"><label for="rMeet">Meet / trial</label><input class="inp" id="rMeet" placeholder="e.g. Club time trial"></div><div class="field"><label for="rDate">Date</label><input class="inp" id="rDate" type="date" value="${ymd(today())}"></div></div>
+    <button class="btn btn-main" data-act="addresult">Save result</button></div>`;
+  return h;
+}
+
+function vFeesStaff(){
+  const paid=db.charges.filter(c=>c.status==='paid').reduce((a,c)=>a+c.amount,0), owed=db.charges.filter(c=>c.status==='due').reduce((a,c)=>a+c.amount,0);
+  const mN=monthName(today()), billed=db.charges.some(c=>c.desc.startsWith('Membership – '+mN));
+  return `<h2>Fees</h2><div class="stats"><div class="stat good"><div class="n">${eur(paid)}</div><div class="l">Received</div></div><div class="stat ${owed?'warn':''}"><div class="n">${eur(owed)}</div><div class="l">Still owed · ${db.charges.filter(isLate).length} overdue</div></div></div>
+  <div class="card"><h3>Monthly membership</h3><p class="small muted" style="margin:0">${eur(FEE)} per swimmer per month, due on the 7th.</p>
+  <button class="btn btn-main" data-act="billmonth" ${billed?'disabled':''}>${billed?'✓ '+mN+' already billed':'Bill '+mN+' to all families'}</button></div>
+  ${db.families.slice().sort((a,b)=>famOwes(b.id)-famOwes(a.id)).map(f=>{const o=famOwes(f.id),late=db.charges.some(c=>c.familyId===f.id&&isLate(c)),open=ui.famOpen===f.id;
+    return `<div class="card"><button class="row" data-act="fam" data-id="${f.id}" style="width:100%;background:none;border:none;font:inherit;color:inherit;padding:0;cursor:pointer;text-align:left"><span><b>${esc(f.name)}</b> <span class="small muted">· ${esc(f.ref)}</span><br><span class="small muted">${kidsOf(f.id).map(s=>esc(s.first)).join(', ')}</span></span><span class="tag ${o?(late?'t-red':'t-yellow'):'t-green'}">${o?eur(o)+(late?' overdue':' due'):'All paid'}</span></button>
+    ${open?`<ul class="list" style="margin-top:8px">${db.charges.filter(c=>c.familyId===f.id).map(c=>`<li><span class="small">${esc(c.desc)}<br><b>${eur(c.amount)}</b> ${c.status==='paid'?'<span class="tag t-green">Paid</span>':isLate(c)?'<span class="tag t-red">Overdue</span>':'<span class="tag t-yellow">Due '+fd(c.due)+'</span>'}</span><button class="btn btn-sm ${c.status==='paid'?'btn-ghost':'btn-main'}" data-act="paid" data-id="${c.id}">${c.status==='paid'?'Undo':'Mark paid'}</button></li>`).join('')}</ul>`:''}</div>`}).join('')}
+  <p class="small muted">Tip: match the family reference (e.g. SM-1004) on the bank statement, then tap "Mark paid".</p>`;
+}
+
+/* ---------- PARENT */
+function vHomeParent(f){
+  const kids=kidsOf(f.id), o=famOwes(f.id), m=upMeets().find(m=>pd(m.deadline)>=today()&&kids.some(k=>!m.decl[k.id]));
+  let h=`<h2>Hi, ${esc(f.name.split(' ')[0])}</h2>`;
+  if(m) h+=`<div class="card" style="border-color:var(--aqua);background:var(--aqua-bg)"><h3>🏁 Please declare for ${esc(m.name)}</h3><p class="small" style="margin:0">${fd(m.date)} · closes ${fd(m.deadline)}</p><button class="btn btn-main" data-act="tab" data-tab="meets">Declare now</button></div>`;
+  h+=kids.map(s=>{const n=nextSession(s.squad),p=attPct(s),best=db.results.filter(r=>r.swimmerId===s.id).sort((a,b)=>b.date.localeCompare(a.date))[0];
+    return `<div class="card"><div class="row"><h3>${esc(nm(s))}</h3><span class="tag t-blue">${SQUADS[s.squad].name}</span></div>
+    <ul class="list"><li><span>Next session</span><b>${n?fd(n.date)+' · '+n.start:'—'}</b></li><li><span>Attendance (4 weeks)</span><b>${p==null?'—':p+'%'}</b></li>${best?`<li><span>Latest swim<br><span class="small muted">${esc(best.event)} · ${fd(best.date)}</span></span><span class="time">${ft(best.time)}</span></li>`:''}</ul></div>`}).join('');
+  h+=`<div class="card"><div class="row"><h3>Fees</h3><b style="color:${o?'var(--red)':'var(--green)'}">${o?eur(o)+' to pay':'All paid'}</b></div>${o?'<button class="btn btn-ghost" data-act="tab" data-tab="fees">See how to pay</button>':''}</div>`;
+  return h+vNotices(false);
+}
+function vMeetsParent(f){
+  const kids=kidsOf(f.id);
+  return `<h2>Meets</h2>${upMeets().map(m=>{const open=pd(m.deadline)>=today();
+    return `<div class="card"><div class="row"><h3>${esc(m.name)}</h3><span class="tag t-blue">${fd(m.date)}</span></div><p class="small muted" style="margin:0 0 8px">${esc(m.venue)} · ${open?'declare by '+fd(m.deadline):'declarations closed'}${m.fee?' · '+eur(m.fee)+' per event':''}</p>
+    ${kids.map(s=>{const d=m.decl[s.id],en=m.entries[s.id]||[];return `<div style="padding:10px 0;border-top:1px solid var(--line)"><div class="row"><b>${esc(s.first)}</b>${d==='yes'?'<span class="tag t-green">Swimming</span>':d==='no'?'<span class="tag t-red">Not swimming</span>':'<span class="tag t-yellow">Not declared</span>'}</div>
+      ${open?`<div class="decl" style="margin-top:8px"><button class="btn btn-ghost yes ${d==='yes'?'on':''}" data-act="decl" data-m="${m.id}" data-s="${s.id}" data-v="yes">Yes, swimming</button><button class="btn btn-ghost no ${d==='no'?'on':''}" data-act="decl" data-m="${m.id}" data-s="${s.id}" data-v="no">No</button></div>`:''}
+      ${en.length?`<p class="small" style="margin:8px 0 0">Entered by coach: <b>${en.map(esc).join(', ')}</b></p>`:''}</div>`}).join('')}</div>`}).join('')||'<p class="muted">No upcoming meets.</p>'}`;
+}
+function vFeesParent(f){
+  const ch=db.charges.filter(c=>c.familyId===f.id), o=famOwes(f.id);
+  return `<h2>Fees</h2><div class="stat ${o?'warn':'good'}" style="margin-bottom:14px"><div class="n">${o?eur(o):'€0'}</div><div class="l">${o?'To pay':'All paid'}</div></div>
+  <div class="card"><ul class="list">${ch.map(c=>`<li><span>${esc(c.desc)}<br><b>${eur(c.amount)}</b></span>${c.status==='paid'?'<span class="tag t-green">Paid</span>':isLate(c)?'<span class="tag t-red">Overdue</span>':'<span class="tag t-yellow">Due '+fd(c.due)+'</span>'}</li>`).join('')}</ul></div>
+  <div class="card"><h3>Pay by bank transfer</h3><div class="small muted">Account name</div><div class="bank">${BANK.name}</div><div class="small muted">IBAN</div><div class="bank">${BANK.iban}</div><div class="small muted">Reference (always include this)</div><div class="bank" style="font-size:20px">${esc(f.ref)}</div><p class="small muted" style="margin:0">Shows as paid once the treasurer has checked it.</p></div>`;
+}
+
+/* ---------- SHELL */
+function render(){
+  const root=document.getElementById('root');
+  if(!ui.who){root.innerHTML=vLogin();return}
+  const r=role(), f=r==='parent'?fam(ui.who):null;
+  if(r==='parent'&&!f){ui.who=null;return render()}
+  const tabs=r==='coach'?[['home','🏠','Home'],['squads','✅','Squads'],['meets','🏁','Meets'],['times','⏱','Times'],['fees','€','Fees']]
+    :r==='treas'?[['home','🏠','Home'],['fees','€','Fees']]
+    :[['home','🏠','Home'],['meets','🏁','Meets'],['times','⏱','Times'],['fees','€','Fees']];
+  if(!tabs.some(t=>t[0]===ui.tab))ui.tab='home';
+  let body;
+  if(r==='parent') body=ui.tab==='home'?vHomeParent(f):ui.tab==='meets'?vMeetsParent(f):ui.tab==='times'?vTimes(kidsOf(f.id)):vFeesParent(f);
+  else body=ui.tab==='home'?vHomeStaff():ui.tab==='squads'?vSquads():ui.tab==='meets'?vMeetsStaff():ui.tab==='times'?vTimes():vFeesStaff();
+  const pendDecl=f?upMeets().filter(m=>pd(m.deadline)>=today()&&kidsOf(f.id).some(k=>!m.decl[k.id])).length:0;
+  root.innerHTML=`<header><button class="badge-club" data-act="home" aria-label="Home">SM</button><div class="t"><h1>Sean Mac Club</h1><p>${r==='coach'?'Head Coach':r==='treas'?'Treasurer':esc(f.name)+' · parent'}</p></div><button class="sw" data-act="logout">Switch user</button></header><div class="rope"></div>
+  <main>${body}</main>
+  <nav class="tabs">${tabs.map(([k,ic,l])=>`<button class="${ui.tab===k?'on':''}" data-act="tab" data-tab="${k}"><span class="ic">${ic}</span>${l}${k==='meets'&&pendDecl?`<span class="dot">${pendDecl}</span>`:''}${k==='fees'&&f&&famOwes(f.id)?'<span class="dot">!</span>':''}</button>`).join('')}</nav>`;
+}
+
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]'); if(!el||el.disabled) return;
+  const a=el.dataset.act, d=el.dataset;
+  if(a==='login'){ui.who=d.who;ui.tab='home';ui.meet=null;ui.sw=null}
+  else if(a==='logout'){ui.who=null}
+  else if(a==='home'){ui.tab='home';ui.meet=null;window.scrollTo(0,0)}
+  else if(a==='tab'){ui.tab=d.tab;ui.meet=null;window.scrollTo(0,0)}
+  else if(a==='squad'){ui.squad=d.k;ui.ses=null}
+  else if(a==='ses'){ui.ses+=Number(d.d)}
+  else if(a==='att'){const at=db.attendance[d.key]=db.attendance[d.key]||{};if(at[d.id])delete at[d.id];else at[d.id]=true;save()}
+  else if(a==='openmeet'){ui.tab='meets';ui.meet=d.id;window.scrollTo(0,0)}
+  else if(a==='closemeet'){ui.meet=null}
+  else if(a==='entry'){const m=db.meets.find(x=>x.id===ui.meet),l=m.entries[d.s]=m.entries[d.s]||[];const i=l.indexOf(d.ev);if(i>=0)l.splice(i,1);else l.push(d.ev);save()}
+  else if(a==='billmeet'){const m=db.meets.find(x=>x.id===ui.meet);let n=0;
+    db.swimmers.forEach(s=>{const amt=(m.entries[s.id]||[]).length*m.fee,prev=m.billed[s.id]||0;if(amt!==prev){
+      db.charges=db.charges.filter(c=>!(c.meetKey===m.id+'_'+s.id&&c.status==='due'));
+      const paidAmt=db.charges.filter(c=>c.meetKey===m.id+'_'+s.id).reduce((a,c)=>a+c.amount,0);
+      if(amt-paidAmt>0)db.charges.push({id:'c'+Date.now()+s.id,familyId:s.familyId,meetKey:m.id+'_'+s.id,desc:m.name+' – '+s.first+' ('+(m.entries[s.id]||[]).length+' events)',amount:amt-paidAmt,status:'due',due:m.deadline});
+      m.billed[s.id]=amt;n++}});save();toast(n?'Entries confirmed · '+n+' families billed':'Nothing changed since last time')}
+  else if(a==='addmeet'){const n=val('mName'),dt=val('mDate'),dl=val('mDead');if(!n||!dt||!dl){toast('Fill in name, date and deadline');return}
+    db.meets.push({id:'m'+Date.now(),name:n,venue:val('mVenue')||'—',date:dt,deadline:dl,fee:Number(val('mFee'))||0,events:EVENTS.slice(),decl:{},entries:{},billed:{}});save();toast('Meet created · parents can now declare')}
+  else if(a==='decl'){const m=db.meets.find(x=>x.id===d.m);m.decl[d.s]=d.v;if(d.v==='no')delete m.entries[d.s];save();toast(d.v==='yes'?'Declared: swimming ✅':'Declared: not swimming')}
+  else if(a==='pick'){ui.sw=d.id}
+  else if(a==='addresult'){const t=pt(val('rTime')),ev=val('rEv');if(!t){toast('Time format: 1:15.61 or 33.54');return}
+    const before=pb(ui.sw,ev);db.results.push({id:'r'+Date.now(),swimmerId:ui.sw,event:ev,time:t,date:val('rDate')||ymd(today()),meet:val('rMeet')||'Club time trial'});save();
+    toast(!before||t<before.time?'🎉 New PB: '+ev+' '+ft(t):'Result saved')}
+  else if(a==='billmonth'){const mN=monthName(today()),due=ymd(new Date(today().getFullYear(),today().getMonth(),7));
+    db.families.forEach(f=>{const k=kidsOf(f.id).length;if(k)db.charges.push({id:'c'+Date.now()+f.id,familyId:f.id,desc:'Membership – '+mN+(k>1?' ('+k+' swimmers)':''),amount:FEE*k,status:'due',due})});save();toast(mN+' billed to all families')}
+  else if(a==='fam'){ui.famOpen=ui.famOpen===d.id?null:d.id}
+  else if(a==='paid'){const c=db.charges.find(x=>x.id===d.id);c.status=c.status==='paid'?'due':'paid';save();toast(c.status==='paid'?'Marked as paid':'Marked as not paid')}
+  else if(a==='addnotice'){const t=val('noticeTxt');if(!t){toast('Write the notice first');return}db.notices.push({id:'n'+Date.now(),date:ymd(today()),text:t});save();toast('Notice posted')}
+  else if(a==='delnotice'){db.notices=db.notices.filter(n=>n.id!==d.id);save()}
+  else if(a==='addswimmer'){const fi=val('nFirst'),la=val('nLast'),bo=Number(val('nBorn'));if(!fi||!la||!bo){toast('Fill in name and year of birth');return}
+    let fid=val('nFam');if(!fid){const pn=val('nParent');if(!pn){toast("Add the new parent's name");return}fid='f'+Date.now();db.families.push({id:fid,name:pn,email:'',ref:'SM-'+(1001+db.families.length)})}
+    db.swimmers.push({id:'s'+Date.now(),first:fi,last:la,born:bo,gender:val('nGender'),squad:val('nSquad'),familyId:fid,consent:false});save();toast(fi+' added to '+SQUADS[val('nSquad')].name)}
+  else if(a==='reset'){if(!confirm('Reset all demo data?'))return;try{localStorage.removeItem(KEY)}catch(e){}db=seed();save();ui.who=null;toast('Demo reset')}
+  else return;
+  render();
+});
+document.addEventListener('change',e=>{if(e.target.dataset.change==='pick'){ui.sw=e.target.value;render()}});
+render();
+</script>
+</body>
+</html>
